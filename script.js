@@ -314,9 +314,10 @@ function createCarouselPostElement(post) {
     
     const excerpt = post.content ? post.content.substring(0, 100).replace(/<[^>]*>/g, '').trim() + '...' : 'Sem conteúdo disponível';
     
-    // Placeholder se não houver imagem
-    const imageHtml = post.imageUrl ? 
-        `<img src="${post.imageUrl}" alt="${post.title}" class="carousel-post-image">` : 
+    // Usar campo 'image' que é salvo no Firestore
+    const imageUrl = post.image || post.imageUrl;
+    const imageHtml = imageUrl ? 
+        `<img src="${imageUrl}" alt="${post.title}" class="carousel-post-image">` : 
         `<div class="carousel-post-image" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; font-weight: bold;">📝</div>`;
     
     postDiv.innerHTML = `

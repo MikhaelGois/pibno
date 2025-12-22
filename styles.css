@@ -356,6 +356,8 @@ body {
     position: relative;
     z-index: 1;
     max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .hero-verse {
