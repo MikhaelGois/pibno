@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: var(--background-light);
+        }
+
+        .blog-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .blog-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .blog-header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--background-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .blog-page {
+                padding: 5rem 1rem 3rem;
+            }
+
+            .blog-header h1 {
+                font-size: 2rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: white;">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="PIBNO Logo">
+            </a>
+            <nav class="nav" id="nav">
+                <button class="nav-close" id="nav-close">&times;</button>
+                <ul class="nav-list">
+                    <li><a href="index.html#home" class="nav-link">Início</a></li>
+                    <li><a href="index.html#about" class="nav-link">Sobre</a></li>
+                    <li><a href="index.html#schedule" class="nav-link">Horários</a></li>
+                    <li><a href="blog.html" class="nav-link active">Blog</a></li>
+                    <li><a href="index.html#contact" class="nav-link">Contato</a></li>
+                    <li><button class="btn-login" onclick="window.location.href='admin.html'">👥 Área de Membros</button></li>
+                </ul>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Blog Content -->
+    <main class="blog-page">
+        <a href="index.html#blog" class="back-link">← Voltar ao site</a>
+        
+        <div class="blog-header">
+            <h1>📝 Todas as Postagens</h1>
+            <p>Acompanhe todas as novidades e mensagens da nossa igreja</p>
+        </div>
+
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Carregando postagens...</p>
+        </div>
+
+        <div class="blog-grid" id="all-blog-posts" style="display: none;">
+            <!-- Posts will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PIBNO</h3>
+                    <p>Primeira Igreja Batista em Nova Odessa</p>
+                    <p style="margin-top: 1rem; opacity: 0.8;">Servindo a comunidade com amor e fé desde 1985.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html#home">Início</a></li>
+                        <li><a href="index.html#about">Sobre</a></li>
+                        <li><a href="index.html#schedule">Horários</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="index.html#contact">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <ul>
+                        <li>📍 Nova Odessa, SP</li>
+                        <li>📞 (19) 3466-XXXX</li>
+                        <li>✉️ contato@pibno.com.br</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 PIBNO - Primeira Igreja Batista em Nova Odessa. Todos os direitos reservados.</p>
+                <p style="margin-top: 0.5rem; opacity: 0.7; font-size: 0.85rem;">
+                    Desenvolvido por <a href="https://github.com/MikhaelGois" target="_blank" rel="noopener" style="color: white; font-weight: 600;">Mikhael Gois</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getAllPosts } from './firebase-service.js';
+
+        // Criar elemento de post
+        function createBlogPostElement(post) {
+            const article = document.createElement('article');
+            article.className = 'blog-post';
+            article.onclick = () => window.location.href = `post.html?id=${post.id}`;
+            
+            const formattedDate = formatDate(post.date || post.createdAt);
+            
+            let mediaHTML = '';
+            if (post.type === 'image' && post.image) {
+                mediaHTML = `<img src="${post.image}" alt="${post.title}" class="blog-post-image">`;
+            } else if (post.type === 'video' && post.videoId) {
+                mediaHTML = `
+                    <iframe 
+                        class="blog-post-video"
+                        src="https://www.youtube.com/embed/${post.videoId}" 
+                        title="${post.title}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+            }
+            
+            const excerpt = post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content;
+            
+            article.innerHTML = `
+                ${mediaHTML}
+                <div class="blog-post-content">
+                    <p class="blog-post-date">${formattedDate}</p>
+                    <h3 class="blog-post-title">${post.title}</h3>
+                    <p class="blog-post-author">Por ${post.author}</p>
+                    <p class="blog-post-excerpt">${excerpt}</p>
+                    <a href="post.html?id=${post.id}" class="blog-post-read-more" onclick="event.stopPropagation();">Ler mais →</a>
+                </div>
+            `;
+            
+            return article;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('pt-BR', options);
+        }
+
+        // Carregar todos os posts
+        async function loadAllPosts() {
+            const blogGrid = document.getElementById('all-blog-posts');
+            const loading = document.querySelector('.loading');
+            
+            try {
+                // Tentar carregar do posts.json primeiro
+                try {
+                    const response = await fetch('posts.json');
+                    const data = await response.json();
+                    const posts = data.posts || [];
+                    
+                    if (posts.length > 0) {
+                        displayPosts(posts);
+                        loadFirebasePosts(); // Atualizar com Firebase em background
+                        return;
+                    }
+                } catch (jsonError) {
+                    console.log('posts.json não encontrado, tentando Firebase...');
+                }
+                
+                // Se posts.json não funcionar, tentar Firebase
+                const result = await getAllPosts();
+                
+                if (result.success && result.posts.length > 0) {
+                    displayPosts(result.posts);
+                } else {
+                    loading.innerHTML = '<p>Nenhuma postagem disponível no momento.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar posts:', error);
+                loading.innerHTML = '<p>Erro ao carregar postagens. Tente novamente mais tarde.</p>';
+            }
+        }
+
+        function displayPosts(posts) {
+            const blogGrid = document.getElementById('all-blog-posts');
+            const loading = document.querySelector('.loading');
+            
+            blogGrid.innerHTML = '';
+            posts.forEach(post => {
+                const postElement = createBlogPostElement(post);
+                blogGrid.appendChild(postElement);
+            });
+            
+            loading.style.display = 'none';
+            blogGrid.style.display = 'grid';
+        }
+
+        // Carregar posts do Firebase em background
+        async function loadFirebasePosts() {
+            try {
+                const result = await getAllPosts();
+                if (result.success && result.posts.length > 0) {
+                    displayPosts(result.posts);
+                }
+            } catch (error) {
+                console.log('Firebase não disponível, usando posts.json');
+            }
+        }
+
+        // Menu Mobile
+        const navToggle = document.getElementById('nav-toggle');
+        const nav = document.getElementById('nav');
+        const navClose = document.getElementById('nav-close');
+
+        navToggle?.addEventListener('click', () => {
+            nav.classList.add('active');
+        });
+
+        navClose?.addEventListener('click', () => {
+            nav.classList.remove('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', loadAllPosts);
+    </script>
+</body>
+</html>

@@ -201,10 +201,25 @@ async function loadBlogPosts() {
             
             if (posts.length > 0) {
                 blogGrid.innerHTML = '';
-                posts.forEach(post => {
+                // Limitar a 3 posts mais recentes na home
+                const recentPosts = posts.slice(0, 3);
+                recentPosts.forEach(post => {
                     const postElement = createBlogPostElement(post);
                     blogGrid.appendChild(postElement);
                 });
+                
+                // Adicionar botão "Ver Mais" se houver mais de 3 posts
+                if (posts.length > 3) {
+                    const viewMoreBtn = document.createElement('div');
+                    viewMoreBtn.style.textAlign = 'center';
+                    viewMoreBtn.style.marginTop = '2rem';
+                    viewMoreBtn.innerHTML = `
+                        <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                            Ver todas as postagens →
+                        </a>
+                    `;
+                    blogGrid.parentElement.appendChild(viewMoreBtn);
+                }
                 
                 // Após carregar do JSON, tentar atualizar com posts do Firebase em background
                 loadFirebasePosts();
@@ -222,10 +237,25 @@ async function loadBlogPosts() {
         
         if (result.success && result.posts.length > 0) {
             blogGrid.innerHTML = '';
-            result.posts.forEach(post => {
+            // Limitar a 3 posts mais recentes na home
+            const recentPosts = result.posts.slice(0, 3);
+            recentPosts.forEach(post => {
                 const postElement = createBlogPostElement(post);
                 blogGrid.appendChild(postElement);
             });
+            
+            // Adicionar botão "Ver Mais" se houver mais de 3 posts
+            if (result.posts.length > 3) {
+                const viewMoreBtn = document.createElement('div');
+                viewMoreBtn.style.textAlign = 'center';
+                viewMoreBtn.style.marginTop = '2rem';
+                viewMoreBtn.innerHTML = `
+                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                        Ver todas as postagens →
+                    </a>
+                `;
+                blogGrid.parentElement.appendChild(viewMoreBtn);
+            }
         } else {
             blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
         }
@@ -242,10 +272,29 @@ async function loadFirebasePosts() {
         if (result.success && result.posts.length > 0) {
             const blogGrid = document.getElementById('blog-posts');
             blogGrid.innerHTML = '';
-            result.posts.forEach(post => {
+            // Limitar a 3 posts mais recentes na home
+            const recentPosts = result.posts.slice(0, 3);
+            recentPosts.forEach(post => {
                 const postElement = createBlogPostElement(post);
                 blogGrid.appendChild(postElement);
             });
+            
+            // Remover botão antigo se existir
+            const oldBtn = blogGrid.parentElement.querySelector('div[style*="textAlign"]');
+            if (oldBtn) oldBtn.remove();
+            
+            // Adicionar botão "Ver Mais" se houver mais de 3 posts
+            if (result.posts.length > 3) {
+                const viewMoreBtn = document.createElement('div');
+                viewMoreBtn.style.textAlign = 'center';
+                viewMoreBtn.style.marginTop = '2rem';
+                viewMoreBtn.innerHTML = `
+                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                        Ver todas as postagens →
+                    </a>
+                `;
+                blogGrid.parentElement.appendChild(viewMoreBtn);
+            }
         }
     } catch (error) {
         // Silencioso - posts.json já foi carregado
