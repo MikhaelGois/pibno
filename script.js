@@ -103,7 +103,7 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 // Observa os cards para animação
-document.addEventListener('DOMContentLoaded', () => {
+function initCardAnimations() {
     const cards = document.querySelectorAll('.schedule-card, .message-card, .ministry-card');
     
     cards.forEach(card => {
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(card);
     });
-});
+}
 
 // Link ativo no menu conforme scroll
 window.addEventListener('scroll', () => {
@@ -331,7 +331,7 @@ function moveCarousel(direction) {
 }
 
 // Event listeners para os botões do carrossel
-document.addEventListener('DOMContentLoaded', () => {
+function initCarouselButtons() {
     const prevBtn = document.getElementById('carousel-prev');
     const nextBtn = document.getElementById('carousel-next');
     
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Carregar posts do carrossel
     loadCarouselPosts();
-});
+}
 
 // Função para criar elemento de post (mantida para compatibilidade com blog.html)
 function createBlogPostElement(post) {
@@ -396,7 +396,13 @@ function formatDate(dateString) {
 
 // Carregar posts quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
-    loadBlogPosts();
+    // Inicializar animações dos cards
+    initCardAnimations();
+    
+    // Inicializar botões do carrossel
+    initCarouselButtons();
+    
+    // Criar modal de post e inicializar login
     createPostModal();
     initLoginModal();
 });
