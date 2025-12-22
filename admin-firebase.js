@@ -95,14 +95,16 @@ async function handleLogin(e) {
         if (result.success) {
             currentUser = result.userData;
             
-            // Verificar se está aprovado
-            if (currentUser.role === 'pending' || !currentUser.approved) {
-                await logoutUser();
-                showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                return;
-            }
+            console.log('Dados do usuário:', currentUser); // DEBUG
+            
+            // Verificar se está aprovado (TEMPORARIAMENTE DESABILITADO)
+            // if (currentUser.role === 'pending' || !currentUser.approved) {
+            //     await logoutUser();
+            //     showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
+            //     submitBtn.disabled = false;
+            //     submitBtn.textContent = originalText;
+            //     return;
+            // }
             
             isLoggedIn = true;
             showAdminPanel();
