@@ -785,18 +785,24 @@
             btn.disabled = true;
             btn.textContent = 'Publicando...';
             
+            console.log('📝 Tentando adicionar comentário:', { postId: currentPost.id, content });
+            
             try {
                 const result = await addComment(currentPost.id, { content });
                 
+                console.log('✅ Resultado do comentário:', result);
+                
                 if (result.success) {
                     document.getElementById('comment-content').value = '';
+                    alert('✅ Comentário publicado com sucesso!');
                     await loadComments(currentPost.id);
                 } else {
+                    console.error('❌ Erro ao publicar:', result.error);
                     alert('Erro ao publicar comentário: ' + result.error);
                 }
             } catch (error) {
-                console.error('Erro ao adicionar comentário:', error);
-                alert('Erro ao publicar comentário');
+                console.error('❌ Erro ao adicionar comentário:', error);
+                alert('Erro ao publicar comentário: ' + error.message);
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Publicar comentário';
@@ -807,9 +813,13 @@
             const container = document.getElementById('comments-list');
             const countEl = document.getElementById('comments-count');
             
+            console.log('🔄 Carregando comentários para postId:', postId);
+            
             try {
                 const result = await getCommentsByPost(postId);
                 const comments = result.comments || [];
+                
+                console.log('📨 Comentários carregados:', comments.length, comments);
                 
                 countEl.textContent = comments.length;
                 
