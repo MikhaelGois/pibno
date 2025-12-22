@@ -193,21 +193,33 @@ async function loadBlogPosts() {
     const blogGrid = document.getElementById('blog-posts');
     
     try {
-        // Carregar posts do Firebase
+        // Tentar carregar posts do Firebase
         const result = await getAllPosts();
         
-        if (!result.success) {
-            throw new Error(result.error);
-        }
+        let posts = [];
         
-        const posts = result.posts || [];
+        if (result.success && result.posts.length > 0) {
+            // Usar posts do Firebase
+            posts = result.posts;
+        } else {
+            // Fallback: carregar do posts.json
+            try {
+                const response = await fetch('posts.json');
+                const data = await response.json();
+                posts = data.posts || [];
+            } catch (error) {
+                console.log('Nenhum post encontrado no Firebase ou posts.json');
+            }
+        }
         
         if (posts.length === 0) {
             blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
             return;
         }
         
-        // Posts já vem ordenados por data do Firebase
+        // Ordenar posts por data (mais recente primeiro)
+        posts.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+        
         blogGrid.innerHTML = '';
         
         posts.forEach(post => {
@@ -216,7 +228,25 @@ async function loadBlogPosts() {
         });
     } catch (error) {
         console.error('Erro ao carregar posts:', error);
-        blogGrid.innerHTML = '<p class="loading">Erro ao carregar postagens. Tente novamente mais tarde.</p>';
+        
+        // Tentar carregar do posts.json como último recurso
+        try {
+            const response = await fetch('posts.json');
+            const data = await response.json();
+            const posts = data.posts || [];
+            
+            if (posts.length > 0) {
+                blogGrid.innerHTML = '';
+                posts.forEach(post => {
+                    const postElement = createBlogPostElement(post);
+                    blogGrid.appendChild(postElement);
+                });
+            } else {
+                blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
+            }
+        } catch (fallbackError) {
+            blogGrid.innerHTML = '<p class="loading">Erro ao carregar postagens. Tente novamente mais tarde.</p>';
+        }
     }
 }
 

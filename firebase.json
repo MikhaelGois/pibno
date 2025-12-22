@@ -6,8 +6,7 @@
       "**/.*",
       "**/node_modules/**",
       "**/*.md",
-      "admin-backup.js",
-      "posts.json"
+      "admin-backup.js"
     ],
     "rewrites": [
       {
