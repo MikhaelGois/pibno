@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 5rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--background-light);
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+        }
+
+        .btn-logout {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: var(--primary-color);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--background-light);
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .post-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-row input,
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1rem;
+        }
+
+        .form-row textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-row input:focus,
+        .form-row textarea:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .posts-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .post-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .post-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-delete {
+            padding: 0.5rem 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .media-type-fields {
+            display: none;
+        }
+
+        .media-type-fields.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="login-box">
+        <h2>🔐 Login Administrativo</h2>
+        <div id="login-alert"></div>
+        <form id="login-form">
+            <div class="form-row">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-row">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
+        </form>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--background-light); border-radius: 8px;">
+            <p style="text-align: center; color: var(--text-color); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <strong>🔑 Credenciais padrão (primeiro acesso):</strong>
+            </p>
+            <p style="text-align: center; color: var(--primary-color); margin: 0.5rem 0;">
+                <strong>Usuário:</strong> admin<br>
+                <strong>Senha:</strong> pibno2025
+            </p>
+            <p style="text-align: center; color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+                ⚠️ Altere a senha após o primeiro login!
+            </p>
+        </div>
+        <div style="margin-top: 1rem; text-align: center;">
+            <p style="color: var(--text-color); margin-bottom: 0.5rem;">
+                Não tem uma conta? <a href="register.html" style="color: var(--accent-color); font-weight: 600;">Criar conta</a>
+            </p>
+            <button id="reset-system-btn" style="background: none; border: none; color: var(--text-light); text-decoration: underline; cursor: pointer; font-size: 0.85rem;">
+                Resetar sistema (criar usuário admin)
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-container hidden">
+        <div class="admin-header">
+            <div>
+                <h1>📝 Painel Administrativo - PIBNO</h1>
+                <p id="user-info" style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.5rem;"></p>
+            </div>
+            <button class="btn-logout" id="logout-btn">Sair</button>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="tab-button active" data-tab="create">Nova Postagem</button>
+            <button class="tab-button" data-tab="manage">Gerenciar Posts</button>
+            <button class="tab-button" data-tab="users">Usuários</button>
+            <button class="tab-button" data-tab="settings">Configurações</button>
+        </div>
+
+        <!-- Create Post Tab -->
+        <div id="create-tab" class="tab-content active">
+            <div class="post-form">
+                <h2>Criar Nova Postagem</h2>
+                <div id="form-alert"></div>
+                <form id="post-form">
+                    <div class="form-row">
+                        <label for="post-title">Título *</label>
+                        <input type="text" id="post-title" name="title" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="post-author">Autor *</label>
+                        <input type="text" id="post-author" name="author" value="Pastor Verner Gilberto Museneck" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="post-content">Conteúdo *</label>
+                        <textarea id="post-content" name="content" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="post-type">Tipo de Mídia *</label>
+                        <select id="post-type" name="type" required>
+                            <option value="image">Imagem</option>
+                            <option value="video">Vídeo do YouTube</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row media-type-fields active" id="image-field">
+                        <label for="post-image">URL da Imagem</label>
+                        <input type="url" id="post-image" name="image" placeholder="https://exemplo.com/imagem.jpg">
+                        <small style="color: var(--text-light);">Cole a URL de uma imagem da internet</small>
+                        
+                        <label for="image-file" style="margin-top: 1rem;">OU faça upload de uma imagem</label>
+                        <input type="file" id="image-file" name="imageFile" accept="image/*" style="padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 5px;">
+                        <small style="color: var(--text-light);">Envie uma imagem do seu computador (máximo 5MB)</small>
+                    </div>
+
+                    <div class="form-row media-type-fields" id="video-field">
+                        <label for="post-video">ID do Vídeo do YouTube</label>
+                        <input type="text" id="post-video" name="videoId" placeholder="dQw4w9WgXcQ">
+                        <small style="color: var(--text-light);">Ex: Se o link é youtube.com/watch?v=dQw4w9WgXcQ, o ID é: dQw4w9WgXcQ</small>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Publicar Postagem</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Posts Tab -->
+        <div id="manage-tab" class="tab-content">
+            <h2>Posts Publicados</h2>
+            <div id="posts-list" class="posts-list">
+                <!-- Posts will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-tab" class="tab-content">
+            <div class="post-form">
+                <h2>👥 Gerenciar Usuários</h2>
+                <div id="users-alert"></div>
+                
+                <!-- Usuários Pendentes -->
+                <div id="pending-users-section" style="margin-bottom: 2rem;">
+                    <h3>⏳ Usuários Aguardando Aprovação</h3>
+                    <div id="pending-users-list" class="posts-list">
+                        <!-- Pending users will be loaded here -->
+                    </div>
+                </div>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--background-light);">
+                
+                <h3>Criar Novo Usuário Manualmente</h3>
+                <form id="create-user-form">
+                    <div class="form-row">
+                        <label for="new-user-username">Nome de Usuário *</label>
+                        <input type="text" id="new-user-username" name="username" required minlength="3">
+                        <small style="color: var(--text-light);">Mínimo 3 caracteres, sem espaços</small>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="new-user-password">Senha *</label>
+                        <input type="password" id="new-user-password" name="password" required minlength="6">
+                        <small style="color: var(--text-light);">Mínimo 6 caracteres</small>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="new-user-name">Nome Completo *</label>
+                        <input type="text" id="new-user-name" name="name" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="new-user-role">Função *</label>
+                        <select id="new-user-role" name="role" required>
+                            <option value="viewer">Leitor (apenas visualizar posts)</option>
+                            <option value="editor">Editor (criar e gerenciar posts)</option>
+                            <option value="admin">Administrador (acesso total)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Criar Usuário</button>
+                </form>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--background-light);">
+
+                <h3>Usuários Cadastrados</h3>
+                <div id="users-list" class="posts-list">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <div class="post-form">
+                <h2>⚙️ Configurações</h2>
+                <div id="settings-alert"></div>
+                <form id="settings-form">
+                    <div class="form-row">
+                        <label for="new-password">Nova Senha</label>
+                        <input type="password" id="new-password" name="newPassword">
+                    </div>
+                    <div class="form-row">
+                        <label for="confirm-password">Confirmar Senha</label>
+                        <input type="password" id="confirm-password" name="confirmPassword">
+                    </div>
+                    <button type="submit" class="btn-primary">Atualizar Senha</button>
+                </form>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 2px solid var(--background-light);">
+
+                <h3>📥 Exportar / Importar Posts</h3>
+                <p style="margin: 1rem 0; color: var(--text-light);">
+                    Faça backup dos seus posts ou importe de outro arquivo.
+                </p>
+                <button class="btn-primary" id="export-btn" style="margin-right: 1rem;">Exportar Posts (JSON)</button>
+                <input type="file" id="import-file" accept=".json" style="display: none;">
+                <button class="btn-primary" id="import-btn">Importar Posts (JSON)</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="admin-firebase.js"></script>
+</body>
+</html>

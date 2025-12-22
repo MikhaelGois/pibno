@@ -1,0 +1,40 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Bem-vindo à PIBNO",
+      "date": "2025-12-20",
+      "author": "Pastor Verner Gilberto Museneck",
+      "content": "É com grande alegria que damos as boas-vindas a todos que desejam conhecer nossa igreja. A PIBNO é uma comunidade de fé que busca glorificar a Deus através da pregação da Palavra e do serviço ao próximo.",
+      "image": "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=800&q=80",
+      "type": "image"
+    },
+    {
+      "id": 2,
+      "title": "Culto de Ação de Graças",
+      "date": "2025-12-18",
+      "author": "Pastor Verner Gilberto Museneck",
+      "content": "Neste domingo tivemos um culto especial de ação de graças, onde celebramos todas as bênçãos que Deus nos concedeu ao longo deste ano. Que nossa gratidão seja constante!",
+      "image": "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=800&q=80",
+      "type": "image"
+    },
+    {
+      "id": 3,
+      "title": "Estudo Bíblico - 1 Coríntios",
+      "date": "2025-12-15",
+      "author": "Pastor Verner Gilberto Museneck",
+      "content": "Iniciamos uma nova série de estudos sobre a carta de Paulo aos Coríntios. Venha participar das quartas-feiras às 19h30!",
+      "videoId": "dQw4w9WgXcQ",
+      "type": "video"
+    },
+    {
+      "id": 4,
+      "title": "Encontro de Jovens",
+      "date": "2025-12-12",
+      "author": "Ministério de Jovens",
+      "content": "Nosso ministério de jovens realizou um encontro especial com louvores, testemunhos e muita comunhão. A próxima reunião será no próximo sábado!",
+      "image": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&q=80",
+      "type": "image"
+    }
+  ]
+}
