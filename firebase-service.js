@@ -80,8 +80,21 @@ export function onAuthChange(callback) {
     return onAuthStateChanged(auth, callback);
 }
 
-export function getCurrentUser() {
-    return auth.currentUser;
+export async function getCurrentUser() {
+    try {
+        const user = auth.currentUser;
+        if (!user) return null;
+        
+        // Buscar dados completos do usuário
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+            return { id: user.uid, ...userDoc.data() };
+        }
+        return null;
+    } catch (error) {
+        console.error('Erro ao buscar usuário atual:', error);
+        return null;
+    }
 }
 
 // ========== USUÁRIOS ==========
