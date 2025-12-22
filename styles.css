@@ -359,7 +359,7 @@ body {
 }
 
 .hero-verse {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.4;
@@ -367,7 +367,7 @@ body {
 }
 
 .hero-verse-highlight {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.4;
@@ -434,7 +434,7 @@ section {
 }
 
 .section-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.5rem;
     color: var(--primary-color);
     text-align: center;
@@ -518,7 +518,7 @@ section {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 2rem;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .carousel-wrapper {
@@ -717,7 +717,7 @@ section {
 }
 
 .post-modal-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2rem;
     color: var(--primary-color);
     margin-bottom: 0.5rem;
