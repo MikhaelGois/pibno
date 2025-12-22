@@ -18,6 +18,7 @@ import {
     where,
     getDoc,
     setDoc,
+    serverTimestamp,
     ref,
     uploadBytes,
     getDownloadURL
@@ -37,7 +38,7 @@ export async function registerUser(email, password, userData) {
             uid: user.uid,
             role: 'pending',
             approved: false,
-            createdAt: new Date().toISOString()
+            createdAt: serverTimestamp()
         });
         
         return { success: true, user };
