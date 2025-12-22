@@ -130,16 +130,35 @@ export async function getAllUsers() {
 
 export async function getPendingUsers() {
     try {
-        const pendingQuery = query(
+        // Tentar com orderBy
+        let pendingQuery = query(
             collection(db, 'users'), 
-            where('role', '==', 'pending'),
-            orderBy('createdAt', 'desc')
+            where('role', '==', 'pending')
         );
+        
+        try {
+            pendingQuery = query(
+                collection(db, 'users'), 
+                where('role', '==', 'pending'),
+                orderBy('createdAt', 'desc')
+            );
+        } catch (e) {
+            console.log('Usando query sem orderBy:', e);
+        }
+        
         const querySnapshot = await getDocs(pendingQuery);
         const users = [];
         querySnapshot.forEach((doc) => {
             users.push({ id: doc.id, ...doc.data() });
         });
+        
+        // Ordenar manualmente se não tiver createdAt
+        users.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+            return dateB - dateA;
+        });
+        
         return { success: true, users };
     } catch (error) {
         console.error('Erro ao buscar usuários pendentes:', error);
