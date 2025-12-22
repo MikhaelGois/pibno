@@ -188,14 +188,23 @@ function createBackToTopButton() {
 // Cria o botão ao carregar a página
 createBackToTopButton();
 
-// Sistema de Blog
-async function loadBlogPosts() {
-    const blogGrid = document.getElementById('blog-posts');
+// Sistema de Carrossel de Posts
+let currentSlide = 0;
+let totalSlides = 0;
+let allPosts = [];
+
+async function loadCarouselPosts() {
+    const carouselTrack = document.getElementById('carousel-track');
     
-    console.log('🔄 Iniciando carregamento de posts...');
+    if (!carouselTrack) {
+        console.log('⚠️ Elemento carousel-track não encontrado');
+        return;
+    }
+    
+    console.log('🔄 Iniciando carregamento de posts do carrossel...');
     
     try {
-        // Tentar carregar do posts.json primeiro (mais rápido enquanto Firebase não está configurado)
+        // Tentar carregar do posts.json primeiro
         try {
             const response = await fetch('posts.json');
             const data = await response.json();
@@ -204,29 +213,10 @@ async function loadBlogPosts() {
             console.log('📄 Posts do JSON:', posts.length);
             
             if (posts.length > 0) {
-                blogGrid.innerHTML = '';
-                // Limitar a 3 posts mais recentes na home
-                const recentPosts = posts.slice(0, 3);
-                recentPosts.forEach(post => {
-                    const postElement = createBlogPostElement(post);
-                    blogGrid.appendChild(postElement);
-                });
-                
-                // Adicionar botão "Ver Mais" se houver mais de 3 posts
-                if (posts.length > 3) {
-                    const viewMoreBtn = document.createElement('div');
-                    viewMoreBtn.style.textAlign = 'center';
-                    viewMoreBtn.style.marginTop = '2rem';
-                    viewMoreBtn.innerHTML = `
-                        <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
-                            Ver todas as postagens →
-                        </a>
-                    `;
-                    blogGrid.parentElement.appendChild(viewMoreBtn);
-                }
-                
+                allPosts = posts;
+                renderCarousel();
                 // Após carregar do JSON, tentar atualizar com posts do Firebase em background
-                loadFirebasePosts();
+                loadFirebasePostsForCarousel();
                 return;
             }
         } catch (jsonError) {
@@ -239,78 +229,125 @@ async function loadBlogPosts() {
             new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 3000))
         ]);
         
+        console.log('🔥 Resultado do Firebase:', result);
+        
         if (result.success && result.posts.length > 0) {
-            blogGrid.innerHTML = '';
-            // Limitar a 3 posts mais recentes na home
-            const recentPosts = result.posts.slice(0, 3);
-            recentPosts.forEach(post => {
-                const postElement = createBlogPostElement(post);
-                blogGrid.appendChild(postElement);
-            });
-            
-            // Adicionar botão "Ver Mais" se houver mais de 3 posts
-            if (result.posts.length > 3) {
-                const viewMoreBtn = document.createElement('div');
-                viewMoreBtn.style.textAlign = 'center';
-                viewMoreBtn.style.marginTop = '2rem';
-                viewMoreBtn.innerHTML = `
-                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
-                        Ver todas as postagens →
-                    </a>
-                `;
-                blogGrid.parentElement.appendChild(viewMoreBtn);
-            }
+            console.log('✅ Posts encontrados:', result.posts.length);
+            allPosts = result.posts;
+            renderCarousel();
         } else {
-            blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
+            carouselTrack.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
         }
     } catch (error) {
         console.error('Erro ao carregar posts:', error);
-        blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento. Configure o Firebase ou adicione posts no painel admin.</p>';
+        carouselTrack.innerHTML = '<p class="loading">Carregando postagens...</p>';
     }
 }
 
 // Função para carregar posts do Firebase em background
-async function loadFirebasePosts() {
-    console.log('🔥 Tentando carregar do Firebase...');
+async function loadFirebasePostsForCarousel() {
+    console.log('🔥 Tentando atualizar do Firebase...');
     try {
         const result = await getAllPosts();
-        console.log('🔥 Resultado do Firebase:', result);
         if (result.success && result.posts.length > 0) {
-            console.log('✅ Posts encontrados no Firebase:', result.posts.length);
-            const blogGrid = document.getElementById('blog-posts');
-            blogGrid.innerHTML = '';
-            // Limitar a 3 posts mais recentes na home
-            const recentPosts = result.posts.slice(0, 3);
-            recentPosts.forEach(post => {
-                const postElement = createBlogPostElement(post);
-                blogGrid.appendChild(postElement);
-            });
-            
-            // Remover botão antigo se existir
-            const oldBtn = blogGrid.parentElement.querySelector('div[style*="textAlign"]');
-            if (oldBtn) oldBtn.remove();
-            
-            // Adicionar botão "Ver Mais" se houver mais de 3 posts
-            if (result.posts.length > 3) {
-                const viewMoreBtn = document.createElement('div');
-                viewMoreBtn.style.textAlign = 'center';
-                viewMoreBtn.style.marginTop = '2rem';
-                viewMoreBtn.innerHTML = `
-                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
-                        Ver todas as postagens →
-                    </a>
-                `;
-                blogGrid.parentElement.appendChild(viewMoreBtn);
-            }
-        } else {
-            console.log('⚠️ Nenhum post no Firebase');
+            console.log('✅ Atualizando com posts do Firebase:', result.posts.length);
+            allPosts = result.posts;
+            renderCarousel();
         }
     } catch (error) {
-        // Silencioso - posts.json já foi carregado
-        console.log('Firebase não disponível, usando posts.json');
+        console.log('⚠️ Não foi possível atualizar do Firebase:', error.message);
     }
 }
 
+function renderCarousel() {
+    const carouselTrack = document.getElementById('carousel-track');
+    
+    if (!carouselTrack) return;
+    
+    // Garantir mínimo de 5 posts (repetir se necessário)
+    while (allPosts.length < 5 && allPosts.length > 0) {
+        allPosts = [...allPosts, ...allPosts];
+    }
+    
+    totalSlides = Math.max(0, allPosts.length - 2); // -2 porque mostramos 3 por vez
+    
+    carouselTrack.innerHTML = '';
+    
+    allPosts.forEach(post => {
+        const postElement = createCarouselPostElement(post);
+        carouselTrack.appendChild(postElement);
+    });
+    
+    updateCarouselButtons();
+}
+
+function createCarouselPostElement(post) {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'carousel-post';
+    
+    const date = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : 'Data não disponível';
+    const excerpt = post.content ? post.content.substring(0, 100) + '...' : 'Sem conteúdo disponível';
+    
+    postDiv.innerHTML = `
+        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" class="carousel-post-image">` : ''}
+        <div class="carousel-post-content">
+            <p class="carousel-post-date">${date}</p>
+            <h3 class="carousel-post-title">${post.title}</h3>
+            <p class="carousel-post-author">Por: ${post.author || 'Anônimo'}</p>
+            <p class="carousel-post-excerpt">${excerpt}</p>
+        </div>
+    `;
+    
+    postDiv.addEventListener('click', () => {
+        window.location.href = `post.html?id=${post.id}`;
+    });
+    
+    return postDiv;
+}
+
+function updateCarouselButtons() {
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    
+    if (prevBtn && nextBtn) {
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide >= totalSlides;
+    }
+}
+
+function moveCarousel(direction) {
+    const track = document.getElementById('carousel-track');
+    if (!track) return;
+    
+    currentSlide += direction;
+    currentSlide = Math.max(0, Math.min(currentSlide, totalSlides));
+    
+    const slideWidth = track.children[0]?.offsetWidth || 0;
+    const gap = 24; // 1.5rem = 24px
+    const offset = -(currentSlide * (slideWidth + gap));
+    
+    track.style.transform = `translateX(${offset}px)`;
+    updateCarouselButtons();
+}
+
+// Event listeners para os botões do carrossel
+document.addEventListener('DOMContentLoaded', () => {
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => moveCarousel(-1));
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => moveCarousel(1));
+    }
+    
+    // Carregar posts do carrossel
+    loadCarouselPosts();
+});
+
+// Função para criar elemento de post (mantida para compatibilidade com blog.html)
 function createBlogPostElement(post) {
     const article = document.createElement('article');
     article.className = 'blog-post';
