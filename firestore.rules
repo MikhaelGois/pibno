@@ -25,8 +25,8 @@ service cloud.firestore {
     
     // Regras para a coleção de posts
     match /posts/{postId} {
-      // Qualquer um pode ler posts (público)
-      allow read: if true;
+      // Qualquer um pode ler e listar posts (público)
+      allow read, list: if true;
       
       // Apenas usuários autenticados e aprovados podem criar posts
       allow create: if request.auth != null && 
