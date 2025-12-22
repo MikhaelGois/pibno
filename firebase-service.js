@@ -274,17 +274,39 @@ export async function addComment(postId, commentData) {
 
 export async function getCommentsByPost(postId) {
     try {
-        const commentsQuery = query(
-            collection(db, 'comments'), 
-            where('postId', '==', postId),
-            orderBy('createdAt', 'desc')
-        );
-        const querySnapshot = await getDocs(commentsQuery);
-        const comments = [];
-        querySnapshot.forEach((doc) => {
-            comments.push({ id: doc.id, ...doc.data() });
-        });
-        return { success: true, comments };
+        // Tentar primeiro com orderBy
+        try {
+            const commentsQuery = query(
+                collection(db, 'comments'), 
+                where('postId', '==', postId),
+                orderBy('createdAt', 'desc')
+            );
+            const querySnapshot = await getDocs(commentsQuery);
+            const comments = [];
+            querySnapshot.forEach((doc) => {
+                comments.push({ id: doc.id, ...doc.data() });
+            });
+            return { success: true, comments };
+        } catch (indexError) {
+            // Se falhar por falta de índice, tentar sem orderBy
+            console.log('⚠️ Índice ainda não disponível, carregando sem ordenação:', indexError.message);
+            const commentsQuery = query(
+                collection(db, 'comments'), 
+                where('postId', '==', postId)
+            );
+            const querySnapshot = await getDocs(commentsQuery);
+            const comments = [];
+            querySnapshot.forEach((doc) => {
+                comments.push({ id: doc.id, ...doc.data() });
+            });
+            // Ordenar manualmente
+            comments.sort((a, b) => {
+                const dateA = a.createdAt?.seconds || 0;
+                const dateB = b.createdAt?.seconds || 0;
+                return dateB - dateA;
+            });
+            return { success: true, comments };
+        }
     } catch (error) {
         console.error('Erro ao buscar comentários:', error);
         return { success: false, error: error.message, comments: [] };
