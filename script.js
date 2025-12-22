@@ -539,10 +539,13 @@ async function handleLoginSubmit(e) {
             
             const roleLabel = result.userData.role === 'admin' ? 'Administrador' : 
                              result.userData.role === 'editor' ? 'Editor' : 'Leitor';
-            showLoginAlert(`✅ Login realizado como ${roleLabel}! Redirecionando...`, 'success');
+            showLoginAlert(`✅ Login realizado como ${roleLabel}!`, 'success');
             
+            // Fechar modal após login bem-sucedido
             setTimeout(() => {
-                window.location.href = 'admin.html';
+                closeLoginModalFunc();
+                // Atualizar botão de login
+                checkIfLoggedIn();
             }, 1000);
         } else {
             showLoginAlert(`❌ ${result.error}`, 'error');

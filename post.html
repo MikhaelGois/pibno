@@ -746,9 +746,15 @@
             if (!currentUser) {
                 container.innerHTML = `
                     <div class="login-prompt">
-                        <p>Faça <a href="index.html#login" onclick="document.getElementById('btn-login').click(); return false;">login</a> para comentar neste post.</p>
+                        <p>Faça <a href="#" id="show-login-modal" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">login</a> para comentar neste post.</p>
                     </div>
                 `;
+                
+                // Adicionar evento ao link de login
+                document.getElementById('show-login-modal').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openLoginModal();
+                });
             } else {
                 container.innerHTML = `
                     <form class="comment-form" id="comment-form">
@@ -899,6 +905,125 @@
         }
         
         document.addEventListener('DOMContentLoaded', loadPost);
+
+        // Funções do Modal de Login
+        function openLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('login-modal-form').reset();
+            document.getElementById('login-modal-alert').innerHTML = '';
+        }
+
+        // Event listeners do modal
+        document.getElementById('close-login-modal').addEventListener('click', closeLoginModal);
+        
+        document.getElementById('login-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'login-modal') {
+                closeLoginModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('login-modal').style.display === 'flex') {
+                closeLoginModal();
+            }
+        });
+
+        // Handler do formulário de login
+        document.getElementById('login-modal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 Entrando...';
+            
+            try {
+                const result = await loginUser(email, password);
+                
+                if (result.success) {
+                    if (result.userData.role === 'pending' || !result.userData.approved) {
+                        showLoginAlert('⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                        return;
+                    }
+                    
+                    showLoginAlert('✅ Login realizado com sucesso!', 'success');
+                    
+                    setTimeout(() => {
+                        closeLoginModal();
+                        // Recarregar o formulário de comentário
+                        loadUserAndCommentForm();
+                    }, 1000);
+                } else {
+                    showLoginAlert(`❌ ${result.error}`, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showLoginAlert('❌ Erro ao fazer login. Tente novamente.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        function showLoginAlert(message, type) {
+            const alertDiv = document.getElementById('login-modal-alert');
+            const alertClass = type === 'success' ? 'login-alert-success' : 'login-alert-error';
+            const bgColor = type === 'success' ? '#d4edda' : '#f8d7da';
+            const textColor = type === 'success' ? '#155724' : '#721c24';
+            const borderColor = type === 'success' ? '#c3e6cb' : '#f5c6cb';
+            
+            alertDiv.innerHTML = `
+                <div style="padding: 1rem; margin-bottom: 1rem; border-radius: 5px; font-weight: 600; background: ${bgColor}; color: ${textColor}; border: 1px solid ${borderColor};">
+                    ${message}
+                </div>
+            `;
+            
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
     </script>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="login-modal-content" style="background: white; padding: 2rem; border-radius: 10px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative;">
+            <button class="login-modal-close" id="close-login-modal" style="position: absolute; top: 1rem; right: 1rem; font-size: 2rem; background: none; border: none; cursor: pointer; color: var(--text-light); line-height: 1;">&times;</button>
+            <div class="login-modal-header" style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">👥 Login</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Entre para comentar neste post</p>
+            </div>
+            <div id="login-modal-alert"></div>
+            <form id="login-modal-form">
+                <div class="login-form-group" style="margin-bottom: 1rem;">
+                    <label for="login-username" style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Usuário/Email</label>
+                    <input type="text" id="login-username" name="username" required autocomplete="username" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                </div>
+                <div class="login-form-group" style="margin-bottom: 1.5rem;">
+                    <label for="login-password" style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Senha</label>
+                    <input type="password" id="login-password" name="password" required autocomplete="current-password" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                </div>
+                <button type="submit" class="btn-login-submit" style="width: 100%; padding: 1rem; background: var(--accent-color); color: white; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">Entrar</button>
+            </form>
+            <div class="login-modal-footer" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                <p style="margin: 0.5rem 0; color: var(--text-light);">Não tem uma conta? <a href="register.html" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">Criar conta</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

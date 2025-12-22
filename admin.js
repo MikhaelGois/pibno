@@ -320,6 +320,7 @@ function renderPostsList() {
                 <p>Por ${post.author} • ${new Date(post.date || post.createdAt).toLocaleDateString('pt-BR')} • ${post.type === 'image' ? '📷 Imagem' : '🎥 Vídeo'}</p>
             </div>
             <div class="post-actions">
+                <a href="post.html?id=${post.id}" target="_blank" class="btn-view">👁️ Visualizar</a>
                 <button class="btn-delete" onclick="handleDeletePost('${post.id}')">🗑️ Excluir</button>
             </div>
         </div>
