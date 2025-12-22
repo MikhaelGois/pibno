@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras para a coleção de usuários
+    match /users/{userId} {
+      // Qualquer usuário autenticado pode ler seus próprios dados
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Administradores podem ler todos os usuários
+      allow read: if request.auth != null && 
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      
+      // Permitir criação de novos usuários durante registro
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // Apenas admins podem atualizar usuários
+      allow update: if request.auth != null && 
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      
+      // Apenas admins podem deletar usuários
+      allow delete: if request.auth != null && 
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Regras para a coleção de posts
+    match /posts/{postId} {
+      // Qualquer um pode ler posts (público)
+      allow read: if true;
+      
+      // Apenas usuários autenticados e aprovados podem criar posts
+      allow create: if request.auth != null && 
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approved == true &&
+                       (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor');
+      
+      // Apenas usuários autenticados e aprovados podem atualizar posts
+      allow update: if request.auth != null && 
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approved == true &&
+                       (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor');
+      
+      // Apenas admins podem deletar posts
+      allow delete: if request.auth != null && 
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
