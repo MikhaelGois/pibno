@@ -89,6 +89,61 @@
             margin-bottom: 1.5rem;
         }
         
+        .post-content strong {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .post-content em {
+            font-style: italic;
+        }
+        
+        .post-content u {
+            text-decoration: underline;
+        }
+        
+        .post-content h1,
+        .post-content h2,
+        .post-content h3 {
+            margin: 2rem 0 1rem;
+            color: var(--primary-color);
+        }
+        
+        .post-content h1 { font-size: 2rem; }
+        .post-content h2 { font-size: 1.6rem; }
+        .post-content h3 { font-size: 1.3rem; }
+        
+        .post-content ul {
+            margin: 1.5rem 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .post-content li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .post-content li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .post-content a {
+            color: var(--accent-color);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .post-content a:hover {
+            color: var(--primary-color);
+        }
+        
         .post-share {
             padding: 2rem;
             background: var(--background-light);
@@ -307,7 +362,7 @@
                         ${mediaHTML}
                         
                         <div class="post-content">
-                            ${post.content.split('\n').map(p => `<p>${p}</p>`).join('')}
+                            ${formatContent(post.content)}
                         </div>
                         
                         <div class="post-share">
@@ -371,6 +426,42 @@
                 }, 2000);
             });
         };
+        
+        function formatContent(content) {
+            if (!content) return '';
+            
+            // Converter markdown-like para HTML
+            let formatted = content
+                // Negrito: **texto** -> <strong>texto</strong>
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Itálico: *texto* -> <em>texto</em>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Sublinhado: __texto__ -> <u>texto</u>
+                .replace(/__(.*?)__/g, '<u>$1</u>')
+                // Títulos: ### Texto -> <h3>Texto</h3>
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                // Links: [texto](url) -> <a href="url">texto</a>
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                // Listas: • item -> <li>item</li>
+                .replace(/^• (.*$)/gim, '<li>$1</li>');
+            
+            // Envolver listas em <ul>
+            formatted = formatted.replace(/(<li>.*<\/li>)/gis, '<ul>$1</ul>');
+            
+            // Quebras de linha -> parágrafos
+            const lines = formatted.split('\n').filter(line => line.trim());
+            formatted = lines.map(line => {
+                // Se já é um elemento HTML (h1-6, ul, li), não envolver em <p>
+                if (line.match(/^<(h[1-6]|ul|li)/)) {
+                    return line;
+                }
+                return `<p>${line}</p>`;
+            }).join('');
+            
+            return formatted;
+        }
         
         document.addEventListener('DOMContentLoaded', loadPost);
     </script>

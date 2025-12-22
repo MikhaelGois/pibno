@@ -223,7 +223,7 @@ async function handlePostSubmit(e) {
         
         const postData = {
             title: formData.get('title'),
-            author: formData.get('author'),
+            author: currentUser.name, // Usar nome completo do usuário logado
             content: formData.get('content'),
             type: type
         };

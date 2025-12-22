@@ -120,6 +120,21 @@
             resize: vertical;
         }
 
+        .format-btn {
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border: 2px solid var(--background-light);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .format-btn:hover {
+            background: var(--background-light);
+            border-color: var(--secondary-color);
+        }
+
         .form-row input:focus,
         .form-row textarea:focus,
         .form-row select:focus {
@@ -275,13 +290,17 @@
                     </div>
 
                     <div class="form-row">
-                        <label for="post-author">Autor *</label>
-                        <input type="text" id="post-author" name="author" value="Pastor Verner Gilberto Museneck" required>
-                    </div>
-
-                    <div class="form-row">
                         <label for="post-content">Conteúdo *</label>
-                        <textarea id="post-content" name="content" required></textarea>
+                        <div style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button type="button" class="format-btn" onclick="formatText('bold')" title="Negrito"><strong>B</strong></button>
+                            <button type="button" class="format-btn" onclick="formatText('italic')" title="Itálico"><em>I</em></button>
+                            <button type="button" class="format-btn" onclick="formatText('underline')" title="Sublinhado"><u>U</u></button>
+                            <button type="button" class="format-btn" onclick="formatText('heading')" title="Título">H</button>
+                            <button type="button" class="format-btn" onclick="formatText('list')" title="Lista">• Lista</button>
+                            <button type="button" class="format-btn" onclick="formatText('link')" title="Link">🔗 Link</button>
+                        </div>
+                        <textarea id="post-content" name="content" required placeholder="Digite o conteúdo da postagem..."></textarea>
+                        <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">Use os botões acima para formatar o texto (negrito, itálico, listas, etc.)</small>
                     </div>
 
                     <div class="form-row">
@@ -406,6 +425,53 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Funções de formatação de texto
+        function formatText(format) {
+            const textarea = document.getElementById('post-content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let formattedText = '';
+            
+            switch(format) {
+                case 'bold':
+                    formattedText = `**${selectedText || 'texto em negrito'}**`;
+                    break;
+                case 'italic':
+                    formattedText = `*${selectedText || 'texto em itálico'}*`;
+                    break;
+                case 'underline':
+                    formattedText = `__${selectedText || 'texto sublinhado'}__`;
+                    break;
+                case 'heading':
+                    formattedText = `### ${selectedText || 'Título'}\n`;
+                    break;
+                case 'list':
+                    formattedText = `\n• ${selectedText || 'Item da lista'}\n• Item 2\n• Item 3\n`;
+                    break;
+                case 'link':
+                    const url = prompt('Digite a URL do link:');
+                    if (url) {
+                        formattedText = `[${selectedText || 'texto do link'}](${url})`;
+                    } else {
+                        return;
+                    }
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+            textarea.focus();
+            
+            // Selecionar o texto inserido
+            if (selectedText) {
+                textarea.setSelectionRange(start, start + formattedText.length);
+            } else {
+                textarea.setSelectionRange(start + formattedText.indexOf(selectedText === '' ? 'texto' : selectedText), start + formattedText.indexOf(selectedText === '' ? 'texto' : selectedText) + (selectedText === '' ? 5 : selectedText.length));
+            }
+        }
+    </script>
 
     <script type="module" src="admin-firebase.js"></script>
 </body>
