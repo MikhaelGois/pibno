@@ -5,10 +5,10 @@ service cloud.firestore {
     // Regras para a coleção de usuários
     match /users/{userId} {
       // Qualquer usuário autenticado pode ler seus próprios dados
-      allow read: if request.auth != null && request.auth.uid == userId;
+      allow get: if request.auth != null && request.auth.uid == userId;
       
-      // Administradores podem ler todos os usuários
-      allow read: if request.auth != null && 
+      // Administradores podem ler e listar todos os usuários
+      allow read, list: if request.auth != null && 
                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
       
       // Permitir criação de novos usuários durante registro
