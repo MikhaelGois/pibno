@@ -33,20 +33,28 @@ const videoField = document.getElementById('video-field');
 // Verificar autenticação ao carregar
 onAuthChange(async (user) => {
     if (user) {
-        // Usuário logado
-        const userData = await getCurrentUser();
-        if (userData && userData.role !== 'pending' && userData.approved) {
-            currentUser = userData;
-            isLoggedIn = true;
-            showAdminPanel();
-            await loadPosts();
-            if (currentUser.role === 'admin') {
-                await loadUsers();
+        try {
+            // Aguardar um pouco para o token se propagar
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Usuário logado
+            const userData = await getCurrentUser();
+            if (userData && userData.role !== 'pending' && userData.approved) {
+                currentUser = userData;
+                isLoggedIn = true;
+                showAdminPanel();
+                await loadPosts();
+                if (currentUser.role === 'admin') {
+                    await loadUsers();
+                }
+            } else if (userData) {
+                // Usuário pendente ou não aprovado
+                await handleLogout();
+                showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
             }
-        } else if (userData) {
-            // Usuário pendente ou não aprovado
-            await handleLogout();
-            showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
+        } catch (error) {
+            console.error('Erro ao verificar usuário:', error);
+            // Não fazer nada, deixar na tela de login
         }
     } else {
         // Usuário não logado
@@ -93,18 +101,21 @@ async function handleLogin(e) {
         const result = await loginUser(email, password);
         
         if (result.success) {
+            // Aguardar um pouco para o token se propagar
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
             currentUser = result.userData;
             
             console.log('Dados do usuário:', currentUser); // DEBUG
             
-            // Verificar se está aprovado (TEMPORARIAMENTE DESABILITADO)
-            // if (currentUser.role === 'pending' || !currentUser.approved) {
-            //     await logoutUser();
-            //     showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
-            //     submitBtn.disabled = false;
-            //     submitBtn.textContent = originalText;
-            //     return;
-            // }
+            // Verificar se está aprovado
+            if (currentUser.role === 'pending' || !currentUser.approved) {
+                await logoutUser();
+                showAlert('login-alert', '⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
+            }
             
             isLoggedIn = true;
             showAdminPanel();
