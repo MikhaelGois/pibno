@@ -192,12 +192,16 @@ createBackToTopButton();
 async function loadBlogPosts() {
     const blogGrid = document.getElementById('blog-posts');
     
+    console.log('🔄 Iniciando carregamento de posts...');
+    
     try {
         // Tentar carregar do posts.json primeiro (mais rápido enquanto Firebase não está configurado)
         try {
             const response = await fetch('posts.json');
             const data = await response.json();
             const posts = data.posts || [];
+            
+            console.log('📄 Posts do JSON:', posts.length);
             
             if (posts.length > 0) {
                 blogGrid.innerHTML = '';
@@ -267,9 +271,12 @@ async function loadBlogPosts() {
 
 // Função para carregar posts do Firebase em background
 async function loadFirebasePosts() {
+    console.log('🔥 Tentando carregar do Firebase...');
     try {
         const result = await getAllPosts();
+        console.log('🔥 Resultado do Firebase:', result);
         if (result.success && result.posts.length > 0) {
+            console.log('✅ Posts encontrados no Firebase:', result.posts.length);
             const blogGrid = document.getElementById('blog-posts');
             blogGrid.innerHTML = '';
             // Limitar a 3 posts mais recentes na home
@@ -295,6 +302,8 @@ async function loadFirebasePosts() {
                 `;
                 blogGrid.parentElement.appendChild(viewMoreBtn);
             }
+        } else {
+            console.log('⚠️ Nenhum post no Firebase');
         }
     } catch (error) {
         // Silencioso - posts.json já foi carregado
