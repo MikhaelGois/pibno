@@ -214,7 +214,7 @@ async function loadBlogPosts() {
                     viewMoreBtn.style.textAlign = 'center';
                     viewMoreBtn.style.marginTop = '2rem';
                     viewMoreBtn.innerHTML = `
-                        <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                        <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
                             Ver todas as postagens →
                         </a>
                     `;
@@ -250,7 +250,7 @@ async function loadBlogPosts() {
                 viewMoreBtn.style.textAlign = 'center';
                 viewMoreBtn.style.marginTop = '2rem';
                 viewMoreBtn.innerHTML = `
-                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
                         Ver todas as postagens →
                     </a>
                 `;
@@ -289,7 +289,7 @@ async function loadFirebasePosts() {
                 viewMoreBtn.style.textAlign = 'center';
                 viewMoreBtn.style.marginTop = '2rem';
                 viewMoreBtn.innerHTML = `
-                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                    <a href="blog.html" class="btn" style="display: inline-block; padding: 1rem 3rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease; min-width: 280px;">
                         Ver todas as postagens →
                     </a>
                 `;
