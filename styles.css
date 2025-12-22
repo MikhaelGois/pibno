@@ -687,6 +687,34 @@ section {
     white-space: pre-wrap;
 }
 
+.post-modal-actions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--background-light);
+    text-align: center;
+}
+
+.btn-open-full {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 77, 123, 0.3);
+}
+
+.btn-open-full:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 77, 123, 0.4);
+}
+
 /* Messages */
 .messages {
     background: var(--background-light);
@@ -943,6 +971,7 @@ section {
         box-shadow: -2px 0 10px rgba(0,0,0,0.1);
         transition: var(--transition);
         padding: 2rem;
+        z-index: 1000;
     }
 
     .nav.active {
@@ -973,6 +1002,58 @@ section {
         font-size: 2rem;
         cursor: pointer;
         color: var(--primary-color);
+    }
+
+    /* Blog posts responsivos */
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .blog-post {
+        margin-bottom: 0;
+    }
+
+    /* Modal responsivo */
+    .post-modal-content {
+        width: 95%;
+        max-width: 100%;
+        max-height: 95vh;
+        margin: 1rem;
+        border-radius: 15px;
+    }
+
+    .post-modal-close {
+        font-size: 2rem;
+        padding: 0.5rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .post-modal-image {
+        max-height: 250px;
+        object-fit: cover;
+    }
+
+    .post-modal-video-wrapper {
+        height: 250px;
+    }
+
+    .post-modal-text {
+        padding: 1.5rem;
+    }
+
+    .post-modal-title {
+        font-size: 1.5rem;
+    }
+
+    .post-modal-content-text {
+        font-size: 1rem;
+    }
+
+    .btn-open-full {
+        font-size: 0.9rem;
+        padding: 0.875rem 1.5rem;
     }
 
     .hero-verse,

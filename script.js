@@ -253,7 +253,7 @@ function createBlogPostElement(post) {
             <h3 class="blog-post-title">${post.title}</h3>
             <p class="blog-post-author">Por ${post.author}</p>
             <p class="blog-post-excerpt">${excerpt}</p>
-            <a href="#" class="blog-post-read-more" onclick="event.stopPropagation(); openPostModal(${JSON.stringify(post).replace(/"/g, '&quot;')}); return false;">Ler mais →</a>
+            <a href="post.html?id=${post.id}" class="blog-post-read-more" onclick="event.stopPropagation();">Ler mais →</a>
         </div>
     `;
     
@@ -450,6 +450,11 @@ function openPostModal(post) {
             <h2 class="post-modal-title">${post.title}</h2>
             <p class="blog-post-author">Por ${post.author}</p>
             <div class="post-modal-content-text">${post.content}</div>
+            <div class="post-modal-actions">
+                <a href="post.html?id=${post.id}" class="btn-open-full" target="_blank">
+                    🔗 Abrir em página completa
+                </a>
+            </div>
         </div>
     `;
     
