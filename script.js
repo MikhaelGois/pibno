@@ -459,7 +459,9 @@ async function handleLoginSubmit(e) {
                 return;
             }
             
-            showLoginAlert('✅ Login realizado com sucesso! Redirecionando...', 'success');
+            const roleLabel = result.userData.role === 'admin' ? 'Administrador' : 
+                             result.userData.role === 'editor' ? 'Editor' : 'Leitor';
+            showLoginAlert(`✅ Login realizado como ${roleLabel}! Redirecionando...`, 'success');
             
             setTimeout(() => {
                 window.location.href = 'admin.html';
