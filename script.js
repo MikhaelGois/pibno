@@ -264,14 +264,17 @@ function renderCarousel() {
     
     if (!carouselTrack) return;
     
-    // Garantir mínimo de 5 posts (repetir se necessário)
-    while (allPosts.length < 5 && allPosts.length > 0) {
-        allPosts = [...allPosts, ...allPosts];
-    }
-    
-    totalSlides = Math.max(0, allPosts.length - 2); // -2 porque mostramos 3 por vez
+    // Calcular slides baseado na quantidade real de posts
+    // Se tiver até 3 posts, não precisa navegação
+    // Se tiver mais de 3, permite navegação
+    totalSlides = Math.max(0, allPosts.length - 3);
     
     carouselTrack.innerHTML = '';
+    
+    if (allPosts.length === 0) {
+        carouselTrack.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
+        return;
+    }
     
     allPosts.forEach(post => {
         const postElement = createCarouselPostElement(post);
