@@ -31,13 +31,17 @@ export async function registerUser(email, password, userData) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
+        // Definir valores padrão se não fornecidos
+        const role = userData.role || 'pending';
+        const approved = userData.approved !== undefined ? userData.approved : false;
+        
         // Salvar dados adicionais do usuário no Firestore
         await setDoc(doc(db, 'users', user.uid), {
             ...userData,
             email: email,
             uid: user.uid,
-            role: 'pending',
-            approved: false,
+            role: role,
+            approved: approved,
             createdAt: serverTimestamp()
         });
         

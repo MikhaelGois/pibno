@@ -160,8 +160,8 @@
         <div class="register-form">
             <div class="info-box">
                 <p>
-                    ℹ️ Após criar sua conta, aguarde a aprovação de um administrador. 
-                    Você receberá permissões para acessar o sistema.
+                    ℹ️ <strong>Membros da Igreja:</strong> Acesso automático como leitor (visualizar conteúdo).<br>
+                    <strong>Membros de Ministério:</strong> Acesso automático como editor (publicar postagens).
                 </p>
             </div>
 
@@ -184,6 +184,15 @@
                     <label for="name">Nome Completo *</label>
                     <input type="text" id="name" name="name" required autocomplete="name">
                     <small>Seu nome completo como deseja que apareça.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="member-type">Tipo de Membro *</label>
+                    <select id="member-type" name="member-type" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: 'Open Sans', sans-serif;">
+                        <option value="church">Membro da Igreja</option>
+                        <option value="ministry">Membro de Ministério</option>
+                    </select>
+                    <small>Membros da igreja têm acesso como leitor. Membros de ministério podem publicar postagens.</small>
                 </div>
 
                 <div class="form-group">
@@ -224,6 +233,7 @@
             const name = document.getElementById('name').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const memberType = document.getElementById('member-type').value;
 
             // Validações
             if (password !== confirmPassword) {
@@ -253,14 +263,22 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Criando conta...';
 
+            // Determinar role baseado no tipo de membro
+            const role = memberType === 'ministry' ? 'editor' : 'viewer';
+            const approved = true; // Aprovação automática
+
             // Registrar usuário no Firebase
             const result = await registerUser(email, password, {
                 username: username,
-                name: name
+                name: name,
+                memberType: memberType,
+                role: role,
+                approved: approved
             });
 
             if (result.success) {
-                showAlert('✅ Conta criada com sucesso! Aguarde a aprovação de um administrador.', 'success');
+                const roleLabel = role === 'editor' ? 'Editor (pode publicar)' : 'Leitor (visualizar)';
+                showAlert(`✅ Conta criada com sucesso! Você foi cadastrado como: ${roleLabel}`, 'success');
                 
                 // Limpar formulário
                 registerForm.reset();
