@@ -247,6 +247,81 @@ export async function deletePost(postId) {
     }
 }
 
+// ========== COMMENTS ==========
+
+export async function addComment(postId, commentData) {
+    try {
+        const user = await getCurrentUser();
+        if (!user) {
+            return { success: false, error: 'Usuário não autenticado' };
+        }
+        
+        const commentRef = await addDoc(collection(db, 'comments'), {
+            postId,
+            userId: user.uid,
+            userName: user.name || user.email,
+            content: commentData.content,
+            createdAt: serverTimestamp()
+        });
+        
+        return { success: true, commentId: commentRef.id };
+    } catch (error) {
+        console.error('Erro ao adicionar comentário:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function getCommentsByPost(postId) {
+    try {
+        const commentsQuery = query(
+            collection(db, 'comments'), 
+            where('postId', '==', postId),
+            orderBy('createdAt', 'desc')
+        );
+        const querySnapshot = await getDocs(commentsQuery);
+        const comments = [];
+        querySnapshot.forEach((doc) => {
+            comments.push({ id: doc.id, ...doc.data() });
+        });
+        return { success: true, comments };
+    } catch (error) {
+        console.error('Erro ao buscar comentários:', error);
+        return { success: false, error: error.message, comments: [] };
+    }
+}
+
+export async function deleteComment(commentId) {
+    try {
+        await deleteDoc(doc(db, 'comments', commentId));
+        return { success: true };
+    } catch (error) {
+        console.error('Erro ao excluir comentário:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function getPostsByAuthor(author, limit = 3, excludePostId = null) {
+    try {
+        const postsQuery = query(
+            collection(db, 'posts'),
+            where('author', '==', author),
+            orderBy('createdAt', 'desc'),
+            limit(limit + 1)
+        );
+        const querySnapshot = await getDocs(postsQuery);
+        const posts = [];
+        querySnapshot.forEach((doc) => {
+            if (doc.id !== excludePostId) {
+                posts.push({ id: doc.id, ...doc.data() });
+            }
+        });
+        return { success: true, posts: posts.slice(0, limit) };
+    } catch (error) {
+        console.error('Erro ao buscar posts do autor:', error);
+        return { success: false, posts: [] };
+    }
+}
+
 // ========== STORAGE ==========
 
 export async function uploadImage(file, path) {

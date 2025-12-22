@@ -44,5 +44,19 @@ service cloud.firestore {
       allow delete: if request.auth != null && 
                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
+    
+    // Regras para a coleção de comentários
+    match /comments/{commentId} {
+      // Qualquer um pode ler comentários (público)
+      allow read, list: if true;
+      
+      // Usuários autenticados podem criar comentários
+      allow create: if request.auth != null;
+      
+      // Apenas o autor do comentário ou admin podem deletar
+      allow delete: if request.auth != null && 
+                       (request.auth.uid == resource.data.userId ||
+                        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
   }
 }

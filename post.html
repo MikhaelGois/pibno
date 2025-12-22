@@ -196,6 +196,247 @@
             background: var(--primary-color);
         }
         
+        /* Comments Section */
+        .comments-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(30, 77, 123, 0.08);
+        }
+        
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--background-light);
+        }
+        
+        .comments-header h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .comments-count {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .comment-form {
+            background: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .comment-form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .comment-form button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .comment-form button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .comment-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .comments-list {
+            margin-top: 2rem;
+        }
+        
+        .comment-item {
+            padding: 1.5rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .comment-item:hover {
+            box-shadow: 0 4px 12px rgba(30, 77, 123, 0.1);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comment-author {
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .comment-author::before {
+            content: '👤';
+        }
+        
+        .comment-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .comment-content {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .comment-delete {
+            background: transparent;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .comment-delete:hover {
+            background: #dc3545;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-light);
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .login-prompt a {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Related Posts Section */
+        .related-posts {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: 15px;
+        }
+        
+        .related-posts h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-post-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(30, 77, 123, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .related-post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(30, 77, 123, 0.15);
+        }
+        
+        .related-post-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .related-post-content {
+            padding: 1.25rem;
+        }
+        
+        .related-post-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .related-post-author {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .share-copy {
+            background: var(--primary-color);
+        }
+        
         .post-footer {
             margin-top: 3rem;
             padding-top: 2rem;
@@ -275,7 +516,10 @@
     </div>
 
     <script type="module">
-        import { getAllPosts } from './firebase-service.js';
+        import { getAllPosts, getCommentsByPost, addComment, deleteComment, getCurrentUser, getPostsByAuthor } from './firebase-service.js';
+        
+        let currentPost = null;
+        let currentUser = null;
         
         async function loadPost() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -389,6 +633,32 @@
                             </div>
                         </div>
                         
+                        <!-- Comments Section -->
+                        <section class="comments-section" id="comments-section">
+                            <div class="comments-header">
+                                <h3>💬 Comentários</h3>
+                                <span class="comments-count" id="comments-count">0</span>
+                            </div>
+                            
+                            <div id="comment-form-container"></div>
+                            
+                            <div class="comments-list" id="comments-list">
+                                <div class="loading-post">
+                                    <p>Carregando comentários...</p>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Related Posts -->
+                        <section class="related-posts" id="related-posts">
+                            <h3>📚 Mais posts de ${post.author}</h3>
+                            <div class="related-posts-grid" id="related-posts-grid">
+                                <div class="loading-post">
+                                    <p>Carregando posts relacionados...</p>
+                                </div>
+                            </div>
+                        </section>
+                        
                         <footer class="post-footer">
                             <p style="color: var(--text-light);">
                                 © ${new Date().getFullYear()} PIBNO - Primeira Igreja Batista em Nova Odessa
@@ -399,6 +669,12 @@
                         </footer>
                     </article>
                 `;
+                
+                // Salvar post atual e carregar funcionalidades
+                currentPost = post;
+                await loadUserAndCommentForm();
+                await loadComments(postId);
+                await loadRelatedPosts(post.author, postId);
                 
             } catch (error) {
                 console.error('Erro ao carregar post:', error);
@@ -461,6 +737,165 @@
             }).join('');
             
             return formatted;
+        }
+        
+        async function loadUserAndCommentForm() {
+            currentUser = await getCurrentUser();
+            const container = document.getElementById('comment-form-container');
+            
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="login-prompt">
+                        <p>Faça <a href="index.html#login" onclick="document.getElementById('btn-login').click(); return false;">login</a> para comentar neste post.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <form class="comment-form" id="comment-form">
+                        <textarea 
+                            id="comment-content" 
+                            placeholder="Escreva seu comentário..." 
+                            required
+                            maxlength="500"
+                        ></textarea>
+                        <div class="comment-form-actions">
+                            <small style="color: var(--text-light);">Comentando como <strong>${currentUser.name || currentUser.email}</strong></small>
+                            <button type="submit" id="submit-comment-btn">Publicar comentário</button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('comment-form').addEventListener('submit', handleCommentSubmit);
+            }
+        }
+        
+        async function handleCommentSubmit(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('comment-content').value.trim();
+            if (!content) return;
+            
+            const btn = document.getElementById('submit-comment-btn');
+            btn.disabled = true;
+            btn.textContent = 'Publicando...';
+            
+            try {
+                const result = await addComment(currentPost.id, { content });
+                
+                if (result.success) {
+                    document.getElementById('comment-content').value = '';
+                    await loadComments(currentPost.id);
+                } else {
+                    alert('Erro ao publicar comentário: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar comentário:', error);
+                alert('Erro ao publicar comentário');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Publicar comentário';
+            }
+        }
+        
+        async function loadComments(postId) {
+            const container = document.getElementById('comments-list');
+            const countEl = document.getElementById('comments-count');
+            
+            try {
+                const result = await getCommentsByPost(postId);
+                const comments = result.comments || [];
+                
+                countEl.textContent = comments.length;
+                
+                if (comments.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-comments">
+                            <p>Nenhum comentário ainda. Seja o primeiro a comentar!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = comments.map(comment => {
+                    const date = comment.createdAt?.toDate ? 
+                        comment.createdAt.toDate().toLocaleDateString('pt-BR', { 
+                            day: '2-digit', 
+                            month: 'long', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Data não disponível';
+                    
+                    const canDelete = currentUser && (currentUser.uid === comment.userId || currentUser.role === 'admin');
+                    
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.userName}</span>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <span class="comment-date">${date}</span>
+                                    ${canDelete ? `<button class="comment-delete" onclick="deleteCommentHandler('${comment.id}')">🗑️ Excluir</button>` : ''}
+                                </div>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Erro ao carregar comentários:', error);
+                container.innerHTML = '<p class="no-comments">Erro ao carregar comentários.</p>';
+            }
+        }
+        
+        window.deleteCommentHandler = async function(commentId) {
+            if (!confirm('Tem certeza que deseja excluir este comentário?')) return;
+            
+            try {
+                const result = await deleteComment(commentId);
+                if (result.success) {
+                    await loadComments(currentPost.id);
+                } else {
+                    alert('Erro ao excluir comentário: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao excluir comentário:', error);
+                alert('Erro ao excluir comentário');
+            }
+        };
+        
+        async function loadRelatedPosts(author, currentPostId) {
+            const container = document.getElementById('related-posts-grid');
+            
+            try {
+                const result = await getPostsByAuthor(author, 3, currentPostId);
+                const posts = result.posts || [];
+                
+                if (posts.length === 0) {
+                    document.getElementById('related-posts').style.display = 'none';
+                    return;
+                }
+                
+                container.innerHTML = posts.map(post => {
+                    const imageHtml = post.imageUrl ? 
+                        `<img src="${post.imageUrl}" alt="${post.title}" class="related-post-image">` : 
+                        `<div class="related-post-image" style="background: var(--background-light); display: flex; align-items: center; justify-content: center; font-size: 3rem;">📝</div>`;
+                    
+                    return `
+                        <a href="post.html?id=${post.id}" class="related-post-card">
+                            ${imageHtml}
+                            <div class="related-post-content">
+                                <h4 class="related-post-title">${post.title}</h4>
+                                <p class="related-post-author">Por: ${post.author}</p>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Erro ao carregar posts relacionados:', error);
+                document.getElementById('related-posts').style.display = 'none';
+            }
         }
         
         document.addEventListener('DOMContentLoaded', loadPost);
