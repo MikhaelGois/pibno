@@ -285,11 +285,42 @@ function createCarouselPostElement(post) {
     const postDiv = document.createElement('div');
     postDiv.className = 'carousel-post';
     
-    const date = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : 'Data não disponível';
-    const excerpt = post.content ? post.content.substring(0, 100) + '...' : 'Sem conteúdo disponível';
+    // Formatar data corretamente do Firestore Timestamp
+    let date = 'Data não disponível';
+    if (post.createdAt) {
+        if (post.createdAt.seconds) {
+            // Firestore Timestamp
+            date = new Date(post.createdAt.seconds * 1000).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        } else if (post.createdAt.toDate) {
+            // Firestore Timestamp object
+            date = post.createdAt.toDate().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        } else {
+            // String ou Date
+            date = new Date(post.createdAt).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+    }
+    
+    const excerpt = post.content ? post.content.substring(0, 100).replace(/<[^>]*>/g, '').trim() + '...' : 'Sem conteúdo disponível';
+    
+    // Placeholder se não houver imagem
+    const imageHtml = post.imageUrl ? 
+        `<img src="${post.imageUrl}" alt="${post.title}" class="carousel-post-image">` : 
+        `<div class="carousel-post-image" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; font-weight: bold;">📝</div>`;
     
     postDiv.innerHTML = `
-        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" class="carousel-post-image">` : ''}
+        ${imageHtml}
         <div class="carousel-post-content">
             <p class="carousel-post-date">${date}</p>
             <h3 class="carousel-post-title">${post.title}</h3>
