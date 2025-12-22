@@ -211,7 +211,7 @@ export async function createPost(postData) {
 
 export async function getAllPosts() {
     try {
-        const postsQuery = query(collection(db, 'posts'), orderBy('date', 'desc'));
+        const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(postsQuery);
         const posts = [];
         querySnapshot.forEach((doc) => {
