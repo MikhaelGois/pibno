@@ -193,43 +193,7 @@ async function loadBlogPosts() {
     const blogGrid = document.getElementById('blog-posts');
     
     try {
-        // Tentar carregar posts do Firebase
-        const result = await getAllPosts();
-        
-        let posts = [];
-        
-        if (result.success && result.posts.length > 0) {
-            // Usar posts do Firebase
-            posts = result.posts;
-        } else {
-            // Fallback: carregar do posts.json
-            try {
-                const response = await fetch('posts.json');
-                const data = await response.json();
-                posts = data.posts || [];
-            } catch (error) {
-                console.log('Nenhum post encontrado no Firebase ou posts.json');
-            }
-        }
-        
-        if (posts.length === 0) {
-            blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
-            return;
-        }
-        
-        // Ordenar posts por data (mais recente primeiro)
-        posts.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
-        
-        blogGrid.innerHTML = '';
-        
-        posts.forEach(post => {
-            const postElement = createBlogPostElement(post);
-            blogGrid.appendChild(postElement);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar posts:', error);
-        
-        // Tentar carregar do posts.json como último recurso
+        // Tentar carregar do posts.json primeiro (mais rápido enquanto Firebase não está configurado)
         try {
             const response = await fetch('posts.json');
             const data = await response.json();
@@ -241,12 +205,51 @@ async function loadBlogPosts() {
                     const postElement = createBlogPostElement(post);
                     blogGrid.appendChild(postElement);
                 });
-            } else {
-                blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
+                
+                // Após carregar do JSON, tentar atualizar com posts do Firebase em background
+                loadFirebasePosts();
+                return;
             }
-        } catch (fallbackError) {
-            blogGrid.innerHTML = '<p class="loading">Erro ao carregar postagens. Tente novamente mais tarde.</p>';
+        } catch (jsonError) {
+            console.log('posts.json não encontrado, tentando Firebase...');
         }
+        
+        // Se posts.json não funcionar, tentar Firebase
+        const result = await Promise.race([
+            getAllPosts(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 3000))
+        ]);
+        
+        if (result.success && result.posts.length > 0) {
+            blogGrid.innerHTML = '';
+            result.posts.forEach(post => {
+                const postElement = createBlogPostElement(post);
+                blogGrid.appendChild(postElement);
+            });
+        } else {
+            blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento.</p>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar posts:', error);
+        blogGrid.innerHTML = '<p class="loading">Nenhuma postagem disponível no momento. Configure o Firebase ou adicione posts no painel admin.</p>';
+    }
+}
+
+// Função para carregar posts do Firebase em background
+async function loadFirebasePosts() {
+    try {
+        const result = await getAllPosts();
+        if (result.success && result.posts.length > 0) {
+            const blogGrid = document.getElementById('blog-posts');
+            blogGrid.innerHTML = '';
+            result.posts.forEach(post => {
+                const postElement = createBlogPostElement(post);
+                blogGrid.appendChild(postElement);
+            });
+        }
+    } catch (error) {
+        // Silencioso - posts.json já foi carregado
+        console.log('Firebase não disponível, usando posts.json');
     }
 }
 
