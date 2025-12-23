@@ -22,5 +22,5 @@ EXPOSE 8080
 # Set the PORT environment variable
 ENV PORT=8080
 
-# Start http-server on port 8080
-CMD ["http-server", ".", "-p", "8080"]
+# Start http-server binding to 0.0.0.0 and honoring PORT
+CMD ["sh", "-c", "http-server . -p ${PORT:-8080} -a 0.0.0.0"]
