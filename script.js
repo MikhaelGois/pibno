@@ -661,61 +661,44 @@ document.addEventListener('keydown', (e) => {
 // Tornar função global
 window.openPostModal = openPostModal;
 
-// Inserir botão "Meu perfil" no cabeçalho quando o usuário estiver autenticado
+// Atualizar botão de perfil no header quando usuário autenticar/desautenticar
 onAuthChange(async (user) => {
-    try {
-        const container = document.querySelector('.header .header-content') || document.querySelector('.header');
-        if (!container) return;
+    const btn = document.getElementById('my-profile-btn');
+    
+    if (!btn) {
+        console.warn('Botão my-profile-btn não encontrado no DOM');
+        return;
+    }
 
-        // Garantir que exista um botão placeholder (invisível) no DOM
-        let btn = document.getElementById('my-profile-btn');
-        if (!btn) {
-            btn = document.createElement('a');
-            btn.id = 'my-profile-btn';
-            btn.className = 'btn btn-icon hidden';
-            btn.href = '#';
-            btn.title = 'Meu perfil';
-            btn.innerHTML = `<span class="profile-emoji">👤</span>`;
-            btn.style.marginLeft = '0.5rem';
-            container.appendChild(btn);
-        }
-
-        const navList = document.querySelector('.nav-list');
-
-        if (user) {
-            // usuário autenticado: preencher avatar (se houver) e mostrar
-            let profileData = null;
-            try { profileData = await getCurrentUser(); } catch (e) { console.log('Erro ao obter profileData:', e); }
-
-            btn.classList.remove('hidden');
-            btn.classList.add('btn-icon');
-            btn.href = 'profile.html';
-            if (profileData && profileData.avatarUrl) {
-                btn.innerHTML = `<img src="${profileData.avatarUrl}" alt="avatar" class="header-avatar">`;
+    if (user) {
+        // Usuário autenticado: mostrar avatar
+        try {
+            const profileData = await getCurrentUser();
+            
+            if (profileData) {
+                // Se houver avatar, mostrar. Senão mostrar emoji padrão
+                if (profileData.avatar || profileData.avatarUrl) {
+                    const avatarUrl = profileData.avatar || profileData.avatarUrl;
+                    btn.innerHTML = `<img src="${avatarUrl}" alt="Perfil" class="header-avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                } else {
+                    btn.innerHTML = `<span class="profile-emoji">👤</span>`;
+                }
             } else {
                 btn.innerHTML = `<span class="profile-emoji">👤</span>`;
             }
-
-            // adicionar item ao menu móvel se necessário
-            if (navList && !document.getElementById('nav-my-profile')) {
-                const li = document.createElement('li');
-                li.id = 'nav-my-profile';
-                li.className = 'nav-my-profile-mobile';
-                const link = document.createElement('a');
-                link.href = 'profile.html';
-                link.className = 'nav-link';
-                link.textContent = 'Meu perfil';
-                li.appendChild(link);
-                navList.appendChild(li);
-            }
-        } else {
-            // não autenticado: esconder botão e remover mobile item
-            btn.classList.add('hidden');
-            btn.href = '#';
+            
+            btn.href = 'profile.html';
+            btn.classList.remove('hidden');
+            
+        } catch (err) {
+            console.error('Erro ao carregar dados do perfil:', err);
             btn.innerHTML = `<span class="profile-emoji">👤</span>`;
-            const navItem = document.getElementById('nav-my-profile'); if (navItem) navItem.remove();
+            btn.href = 'profile.html';
+            btn.classList.remove('hidden');
         }
-    } catch (e) {
-        console.log('Erro ao atualizar botão de perfil:', e?.message || e);
-    }
+    } else {
+        // Usuário não autenticado: esconder botão
+        btn.classList.add('hidden');
+        btn.href = '#';
+        btn.innerHTML = `<span class="profile-emoji">👤</span>`;    }
 });
