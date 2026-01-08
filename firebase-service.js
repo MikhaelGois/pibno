@@ -434,10 +434,50 @@ export async function getPostsByAuthor(author, limit = 3, excludePostId = null) 
 
 export async function uploadImage(file, path) {
     try {
-        const storageRef = ref(storage, `${path}/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        const downloadURL = await getDownloadURL(storageRef);
-        return { success: true, url: downloadURL };
+        // Require authenticated user for uploads (storage rules expect auth.uid)
+        const user = auth.currentUser;
+        if (!user) {
+            return { success: false, error: 'Usuário não autenticado' };
+        }
+
+        // Enforce avatars path to use the authenticated user's uid
+        let finalPath = path || '';
+        if (finalPath.startsWith('avatars')) {
+            const parts = finalPath.split('/').filter(Boolean);
+            if (parts.length === 1) {
+                finalPath = `avatars/${user.uid}`;
+            } else if (parts[1] !== user.uid) {
+                // Force write into the authenticated user's avatar folder
+                finalPath = `avatars/${user.uid}`;
+            }
+        }
+
+        // Get auth token for REST API
+        const token = await user.getIdToken();
+        const bucket = "pibno-3aff5.firebasestorage.app";
+        const filename = `${Date.now()}_${file.name}`;
+        const fullPath = `${finalPath}/${filename}`;
+        
+        // Use Firebase Storage REST API (no CORS issues)
+        const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?name=${encodeURIComponent(fullPath)}`;
+        
+        const response = await fetch(uploadUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': file.type || 'application/octet-stream'
+            },
+            body: file
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error?.message || `Upload failed: ${response.status}`);
+        }
+
+        // Get download URL
+        const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(fullPath)}?alt=media`;
+        return { success: true, url: downloadUrl };
     } catch (error) {
         console.error('Erro ao fazer upload:', error);
         return { success: false, error: error.message };

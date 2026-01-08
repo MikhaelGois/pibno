@@ -4,6 +4,7 @@ let currentUser = null;
 let selectedAvatarFile = null;
 let imageEditorState = {
     zoom: 100,
+    // offsets in pixels relative to the centered position
     offsetX: 0,
     offsetY: 0,
     imageUrl: null
@@ -56,14 +57,15 @@ function handleAvatarChange(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Simple client-side limit (2.5MB)
-    if (file.size > 2.5 * 1024 * 1024) {
-        showAlert('Arquivo muito grande. Use até 2.5MB.', 'error');
+    // Simple client-side limit (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showAlert('Arquivo muito grande. Use até 5MB.', 'error');
         e.target.value = '';
         return;
     }
 
-    selectedAvatarFile = file;
+    // Keep the original raw file until user confirms crop/transform
+    imageEditorState.originalFile = file;
     const reader = new FileReader();
     reader.onload = () => {
         imageEditorState.imageUrl = reader.result;
@@ -211,36 +213,241 @@ function showConfirm(message) {
 // Image Editor Functions
 function setupImageEditor() {
     const modal = document.getElementById('image-editor-modal');
-    const zoomSlider = document.getElementById('zoom-slider');
-    const xSlider = document.getElementById('x-slider');
-    const ySlider = document.getElementById('y-slider');
     const confirmBtn = document.getElementById('confirm-image-btn');
     const cancelBtn = document.getElementById('cancel-image-btn');
     const previewImage = document.getElementById('preview-image');
-    
-    zoomSlider.addEventListener('input', () => {
-        imageEditorState.zoom = parseInt(zoomSlider.value);
+    const previewArea = document.querySelector('.preview-area');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // Drag-to-pan state
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+    // Initialize cursor
+    previewImage.style.cursor = 'grab';
+
+    // Mouse events for drag
+    previewImage.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        startOffsetX = imageEditorState.offsetX;
+        startOffsetY = imageEditorState.offsetY;
+        previewImage.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const rect = previewArea.getBoundingClientRect();
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        // compute display sizes to clamp correctly
+        const { displayW, displayH } = computeDisplaySizes();
+        const previewW = rect.width;
+        const previewH = rect.height;
+
+        let minOffsetX, maxOffsetX, minOffsetY, maxOffsetY;
+        if (displayW <= previewW) {
+            // image narrower than preview: disable horizontal panning
+            minOffsetX = maxOffsetX = 0;
+        } else {
+            const centerLeft = (previewW - displayW) / 2;
+            minOffsetX = centerLeft; // allow offset from centerLeft to -centerLeft
+            maxOffsetX = -centerLeft;
+        }
+
+        if (displayH <= previewH) {
+            minOffsetY = maxOffsetY = 0;
+        } else {
+            const centerTop = (previewH - displayH) / 2;
+            minOffsetY = centerTop;
+            maxOffsetY = -centerTop;
+        }
+
+        imageEditorState.offsetX = clamp(startOffsetX + dx, minOffsetX, maxOffsetX);
+        imageEditorState.offsetY = clamp(startOffsetY + dy, minOffsetY, maxOffsetY);
+        updatePreview();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        previewImage.style.cursor = 'grab';
+    });
+
+    // Touch support
+    previewImage.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        isDragging = true;
+        dragStartX = t.clientX;
+        dragStartY = t.clientY;
+        startOffsetX = imageEditorState.offsetX;
+        startOffsetY = imageEditorState.offsetY;
+    }, { passive: true });
+
+    previewImage.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const t = e.touches[0];
+        const rect = previewArea.getBoundingClientRect();
+        const dx = t.clientX - dragStartX;
+        const dy = t.clientY - dragStartY;
+        const { displayW, displayH } = computeDisplaySizes();
+        const previewW = rect.width;
+        const previewH = rect.height;
+
+        let minOffsetX, maxOffsetX, minOffsetY, maxOffsetY;
+        if (displayW <= previewW) {
+            minOffsetX = maxOffsetX = 0;
+        } else {
+            const centerLeft = (previewW - displayW) / 2;
+            minOffsetX = centerLeft;
+            maxOffsetX = -centerLeft;
+        }
+
+        if (displayH <= previewH) {
+            minOffsetY = maxOffsetY = 0;
+        } else {
+            const centerTop = (previewH - displayH) / 2;
+            minOffsetY = centerTop;
+            maxOffsetY = -centerTop;
+        }
+
+        imageEditorState.offsetX = clamp(startOffsetX + dx, minOffsetX, maxOffsetX);
+        imageEditorState.offsetY = clamp(startOffsetY + dy, minOffsetY, maxOffsetY);
+        updatePreview();
+    }, { passive: true });
+
+    previewImage.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    // Wheel for zoom
+    previewArea.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = previewArea.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const old = computeDisplaySizes();
+        const oldZoom = imageEditorState.zoom;
+        const delta = e.deltaY > 0 ? -5 : 5;
+        imageEditorState.zoom = clamp(imageEditorState.zoom + delta, 50, 200);
+        document.getElementById('zoom-value').textContent = imageEditorState.zoom + '%';
+
+        // adjust offsets to keep mouse point stable
+        const now = computeDisplaySizes();
+        const dx = (mouseX - rect.width / 2) * (now.displayW / old.displayW - 1);
+        const dy = (mouseY - rect.height / 2) * (now.displayH / old.displayH - 1);
+        imageEditorState.offsetX = imageEditorState.offsetX - dx;
+        imageEditorState.offsetY = imageEditorState.offsetY - dy;
+
+        updatePreview();
+    }, { passive: false });
+
+    // Zoom buttons
+    const changeZoom = (delta) => {
+        imageEditorState.zoom = clamp(imageEditorState.zoom + delta, 50, 200);
+        document.getElementById('zoom-value').textContent = imageEditorState.zoom + '%';
+        updatePreview();
+    };
+
+    zoomInBtn?.addEventListener('click', () => changeZoom(5));
+    zoomOutBtn?.addEventListener('click', () => changeZoom(-5));
+    resetBtn?.addEventListener('click', () => {
+        imageEditorState.zoom = 100;
+        imageEditorState.offsetX = 0;
+        imageEditorState.offsetY = 0;
         document.getElementById('zoom-value').textContent = imageEditorState.zoom + '%';
         updatePreview();
     });
-    
-    xSlider.addEventListener('input', () => {
-        imageEditorState.offsetX = parseInt(xSlider.value);
-        document.getElementById('x-value').textContent = imageEditorState.offsetX + '%';
-        updatePreview();
-    });
-    
-    ySlider.addEventListener('input', () => {
-        imageEditorState.offsetY = parseInt(ySlider.value);
-        document.getElementById('y-value').textContent = imageEditorState.offsetY + '%';
-        updatePreview();
-    });
-    
-    confirmBtn.addEventListener('click', () => {
-        document.getElementById('avatar-img').src = imageEditorState.imageUrl;
-        // Aplicar transformação ao preview
-        applyImageTransform(document.getElementById('avatar-img'));
-        modal.classList.remove('active');
+
+    confirmBtn.addEventListener('click', async () => {
+        // Render the transformed/cropped image into a canvas and create a compressed Blob/File
+        try {
+            const previewArea = document.querySelector('.preview-area');
+            const previewSize = previewArea ? previewArea.clientWidth : 300; // PX as in the modal preview-area
+            const finalSize = 720; // output size for upload (higher = better quality)
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = imageEditorState.imageUrl;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = resolve;
+            });
+
+            const zoom = imageEditorState.zoom;
+            const natW = imageEditorState.naturalWidth || img.naturalWidth;
+            const natH = imageEditorState.naturalHeight || img.naturalHeight;
+
+            const { displayW, displayH } = computeDisplaySizes();
+
+            // position of displayed image relative to preview area
+            const centerLeft = (previewSize - displayW) / 2;
+            const centerTop = (previewSize - displayH) / 2;
+            // Use same clamping as updatePreview: left/top between (previewSize - display) and 0
+            const left = Math.max(previewSize - displayW, Math.min(0, centerLeft + imageEditorState.offsetX));
+            const top = Math.max(previewSize - displayH, Math.min(0, centerTop + imageEditorState.offsetY));
+
+            // Compute source rectangle in the natural image that maps to the preview area
+            const startXDisplay = Math.max(0, -left);
+            const startYDisplay = Math.max(0, -top);
+            const widthDisplay = Math.min(previewSize, displayW - startXDisplay);
+            const heightDisplay = Math.min(previewSize, displayH - startYDisplay);
+
+            const srcX = (startXDisplay / displayW) * natW;
+            const srcY = (startYDisplay / displayH) * natH;
+            const srcW = (widthDisplay / displayW) * natW;
+            const srcH = (heightDisplay / displayH) * natH;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = finalSize;
+            canvas.height = finalSize;
+            const ctx = canvas.getContext('2d');
+            // white background for JPEG
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the selected source area scaled to finalSize
+            ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, finalSize, finalSize);
+
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+            if (!blob) throw new Error('Falha ao processar imagem');
+
+            const filename = `avatar_${Date.now()}.jpg`;
+            selectedAvatarFile = new File([blob], filename, { type: 'image/jpeg' });
+
+            // Update preview and state
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            imageEditorState.imageUrl = dataUrl;
+            document.getElementById('avatar-img').src = dataUrl;
+
+            // Show generated file size to the user
+            try {
+                const sizeEl = document.getElementById('generated-size');
+                const infoEl = document.getElementById('generated-info');
+                if (sizeEl && infoEl && selectedAvatarFile) {
+                    sizeEl.textContent = formatBytes(selectedAvatarFile.size);
+                    infoEl.style.display = 'block';
+                }
+            } catch (e) {
+                // ignore UI update failures
+            }
+        } catch (err) {
+            console.error('Erro ao aplicar transformação da imagem:', err);
+            showAlert('Erro ao processar a imagem.', 'error');
+        } finally {
+            modal.classList.remove('active');
+            // clear raw input value so re-selecting same file will trigger change
+            document.getElementById('avatar-input').value = '';
+        }
     });
     
     cancelBtn.addEventListener('click', () => {
@@ -257,38 +464,66 @@ function setupImageEditor() {
     });
 }
 
+// Helper: compute display sizes (px) of the image in the preview area based on current zoom
+function computeDisplaySizes() {
+    const previewArea = document.querySelector('.preview-area');
+    const previewSize = previewArea ? previewArea.clientWidth : 300;
+    const imgEl = document.getElementById('preview-image');
+    // fallback if no image loaded
+    let natW = imageEditorState.naturalWidth || imgEl.naturalWidth || previewSize;
+    let natH = imageEditorState.naturalHeight || imgEl.naturalHeight || previewSize;
+    if (!natW || !natH) { natW = previewSize; natH = previewSize; }
+    const scaleCover = Math.max(previewSize / natW, previewSize / natH) * (imageEditorState.zoom / 100);
+    const displayW = natW * scaleCover;
+    const displayH = natH * scaleCover;
+    return { displayW, displayH };
+}
+
 function openImageEditor(imageUrl) {
     const modal = document.getElementById('image-editor-modal');
     const previewImage = document.getElementById('preview-image');
-    const zoomSlider = document.getElementById('zoom-slider');
-    const xSlider = document.getElementById('x-slider');
-    const ySlider = document.getElementById('y-slider');
-    
-    // Reset sliders
+
+    // Reset editor state
     imageEditorState.zoom = 100;
     imageEditorState.offsetX = 0;
     imageEditorState.offsetY = 0;
-    
-    zoomSlider.value = 100;
-    xSlider.value = 0;
-    ySlider.value = 0;
-    
     document.getElementById('zoom-value').textContent = '100%';
-    document.getElementById('x-value').textContent = '0%';
-    document.getElementById('y-value').textContent = '0%';
-    
+
     previewImage.src = imageUrl;
+    // capture natural size when loaded
+    previewImage.onload = () => {
+        imageEditorState.naturalWidth = previewImage.naturalWidth;
+        imageEditorState.naturalHeight = previewImage.naturalHeight;
+        // reset offsets to center
+        imageEditorState.offsetX = 0;
+        imageEditorState.offsetY = 0;
+        updatePreview();
+    };
+
     modal.classList.add('active');
 }
 
 function updatePreview() {
     const previewImage = document.getElementById('preview-image');
-    const zoomPercent = imageEditorState.zoom;
-    const offsetX = imageEditorState.offsetX;
-    const offsetY = imageEditorState.offsetY;
-    
-    previewImage.style.transform = `scale(${zoomPercent / 100}) translate(${offsetX}%, ${offsetY}%)`;
-    previewImage.style.transformOrigin = 'center center';
+    const previewArea = document.querySelector('.preview-area');
+    const previewSize = previewArea.clientWidth; // square
+
+    if (!imageEditorState.naturalWidth || !imageEditorState.naturalHeight) return;
+
+    const { displayW, displayH } = computeDisplaySizes();
+
+    // center position
+    const centerLeft = (previewSize - displayW) / 2;
+    const centerTop = (previewSize - displayH) / 2;
+
+    const left = Math.max(previewSize - displayW, Math.min(0, centerLeft + imageEditorState.offsetX));
+    const top = Math.max(previewSize - displayH, Math.min(0, centerTop + imageEditorState.offsetY));
+
+    previewImage.style.width = Math.round(displayW) + 'px';
+    previewImage.style.height = Math.round(displayH) + 'px';
+    previewImage.style.left = Math.round(left) + 'px';
+    previewImage.style.top = Math.round(top) + 'px';
+    previewImage.style.transform = '';
 }
 
 function applyImageTransform(imgElement) {
@@ -298,4 +533,13 @@ function applyImageTransform(imgElement) {
     
     imgElement.style.transform = `scale(${zoomPercent / 100}) translate(${offsetX}%, ${offsetY}%)`;
     imgElement.style.transformOrigin = 'center center';
+}
+
+function formatBytes(bytes, decimals = 1) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
