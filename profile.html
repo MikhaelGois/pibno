@@ -16,6 +16,113 @@
         .form-row input, .form-row textarea, .form-row select { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e6e6e6; }
         .btns { display:flex; gap:0.75rem; margin-top:1rem; }
         .note { font-size:0.9rem; color:var(--text-light); }
+        
+        /* Image Editor Modal */
+        .image-editor-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-editor-modal.active {
+            display: flex;
+        }
+        
+        .image-editor-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .image-editor-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .preview-area {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            border: 3px solid var(--background);
+            overflow: hidden;
+            background: #f0f0f0;
+            position: relative;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .controls-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .control-value {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .modal-buttons button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-confirm {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-confirm:hover {
+            background: #153d63;
+        }
+        
+        .btn-cancel {
+            background: #f0f0f0;
+            color: var(--text-color);
+        }
+        
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +185,46 @@
             </div>
         </div>
     </main>
+
+    <!-- Image Editor Modal -->
+    <div id="image-editor-modal" class="image-editor-modal">
+        <div class="image-editor-content">
+            <h2 class="image-editor-title">Ajustar Foto</h2>
+            
+            <div class="preview-area">
+                <img id="preview-image" class="preview-image" src="" alt="Preview">
+            </div>
+            
+            <div class="controls-group">
+                <div class="control-label">
+                    <span>Zoom</span>
+                    <span class="control-value" id="zoom-value">100%</span>
+                </div>
+                <input type="range" id="zoom-slider" min="50" max="200" value="100">
+            </div>
+            
+            <div class="controls-group">
+                <div class="control-label">
+                    <span>Posição Horizontal</span>
+                    <span class="control-value" id="x-value">0%</span>
+                </div>
+                <input type="range" id="x-slider" min="-50" max="50" value="0">
+            </div>
+            
+            <div class="controls-group">
+                <div class="control-label">
+                    <span>Posição Vertical</span>
+                    <span class="control-value" id="y-value">0%</span>
+                </div>
+                <input type="range" id="y-slider" min="-50" max="50" value="0">
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-confirm" id="confirm-image-btn">Aplicar</button>
+                <button class="btn-cancel" id="cancel-image-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="profile.js"></script>
 </body>

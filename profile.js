@@ -2,6 +2,12 @@ import { getCurrentUser, getUserData, uploadImage, updateUserProfile, logoutUser
 
 let currentUser = null;
 let selectedAvatarFile = null;
+let imageEditorState = {
+    zoom: 100,
+    offsetX: 0,
+    offsetY: 0,
+    imageUrl: null
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     // Aguardar alteração de autenticação para carregar o perfil
@@ -41,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('avatar-input').addEventListener('change', handleAvatarChange);
     document.getElementById('save-btn').addEventListener('click', handleSave);
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    
+    // Image Editor Modal listeners
+    setupImageEditor();
 });
 
 function handleAvatarChange(e) {
@@ -57,7 +66,8 @@ function handleAvatarChange(e) {
     selectedAvatarFile = file;
     const reader = new FileReader();
     reader.onload = () => {
-        document.getElementById('avatar-img').src = reader.result;
+        imageEditorState.imageUrl = reader.result;
+        openImageEditor(reader.result);
     };
     reader.readAsDataURL(file);
 }
@@ -196,4 +206,96 @@ function showConfirm(message) {
         saveBtn.addEventListener('click', () => { clean(); resolve(true); });
         cancelBtn.addEventListener('click', () => { clean(); resolve(false); });
     });
+}
+
+// Image Editor Functions
+function setupImageEditor() {
+    const modal = document.getElementById('image-editor-modal');
+    const zoomSlider = document.getElementById('zoom-slider');
+    const xSlider = document.getElementById('x-slider');
+    const ySlider = document.getElementById('y-slider');
+    const confirmBtn = document.getElementById('confirm-image-btn');
+    const cancelBtn = document.getElementById('cancel-image-btn');
+    const previewImage = document.getElementById('preview-image');
+    
+    zoomSlider.addEventListener('input', () => {
+        imageEditorState.zoom = parseInt(zoomSlider.value);
+        document.getElementById('zoom-value').textContent = imageEditorState.zoom + '%';
+        updatePreview();
+    });
+    
+    xSlider.addEventListener('input', () => {
+        imageEditorState.offsetX = parseInt(xSlider.value);
+        document.getElementById('x-value').textContent = imageEditorState.offsetX + '%';
+        updatePreview();
+    });
+    
+    ySlider.addEventListener('input', () => {
+        imageEditorState.offsetY = parseInt(ySlider.value);
+        document.getElementById('y-value').textContent = imageEditorState.offsetY + '%';
+        updatePreview();
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+        document.getElementById('avatar-img').src = imageEditorState.imageUrl;
+        // Aplicar transformação ao preview
+        applyImageTransform(document.getElementById('avatar-img'));
+        modal.classList.remove('active');
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.getElementById('avatar-input').value = '';
+    });
+    
+    // Fechar ao clicar fora
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            document.getElementById('avatar-input').value = '';
+        }
+    });
+}
+
+function openImageEditor(imageUrl) {
+    const modal = document.getElementById('image-editor-modal');
+    const previewImage = document.getElementById('preview-image');
+    const zoomSlider = document.getElementById('zoom-slider');
+    const xSlider = document.getElementById('x-slider');
+    const ySlider = document.getElementById('y-slider');
+    
+    // Reset sliders
+    imageEditorState.zoom = 100;
+    imageEditorState.offsetX = 0;
+    imageEditorState.offsetY = 0;
+    
+    zoomSlider.value = 100;
+    xSlider.value = 0;
+    ySlider.value = 0;
+    
+    document.getElementById('zoom-value').textContent = '100%';
+    document.getElementById('x-value').textContent = '0%';
+    document.getElementById('y-value').textContent = '0%';
+    
+    previewImage.src = imageUrl;
+    modal.classList.add('active');
+}
+
+function updatePreview() {
+    const previewImage = document.getElementById('preview-image');
+    const zoomPercent = imageEditorState.zoom;
+    const offsetX = imageEditorState.offsetX;
+    const offsetY = imageEditorState.offsetY;
+    
+    previewImage.style.transform = `scale(${zoomPercent / 100}) translate(${offsetX}%, ${offsetY}%)`;
+    previewImage.style.transformOrigin = 'center center';
+}
+
+function applyImageTransform(imgElement) {
+    const zoomPercent = imageEditorState.zoom;
+    const offsetX = imageEditorState.offsetX;
+    const offsetY = imageEditorState.offsetY;
+    
+    imgElement.style.transform = `scale(${zoomPercent / 100}) translate(${offsetX}%, ${offsetY}%)`;
+    imgElement.style.transformOrigin = 'center center';
 }
