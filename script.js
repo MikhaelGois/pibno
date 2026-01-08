@@ -667,6 +667,7 @@ window.openPostModal = openPostModal;
 onAuthChange(async (user) => {
     const btn = document.getElementById('my-profile-btn');
     const popup = document.getElementById('profile-popup');
+    const btnLogin = document.getElementById('btn-login');
     
     if (!btn || !popup) {
         console.warn('Elementos de perfil não encontrados no DOM');
@@ -674,7 +675,7 @@ onAuthChange(async (user) => {
     }
 
     if (user) {
-        // Usuário autenticado: mostrar avatar e popup
+        // Usuário autenticado: mostrar avatar e popup, esconder botão de entrar
         try {
             const profileData = await getCurrentUser();
             
@@ -692,16 +693,27 @@ onAuthChange(async (user) => {
             
             btn.classList.remove('hidden');
             
+            // Esconder botão de entrar
+            if (btnLogin) {
+                btnLogin.style.display = 'none';
+            }
+            
         } catch (err) {
             console.error('Erro ao carregar dados do perfil:', err);
             btn.innerHTML = `<span class="profile-emoji">👤</span>`;
             btn.classList.remove('hidden');
+            if (btnLogin) {
+                btnLogin.style.display = 'none';
+            }
         }
     } else {
-        // Usuário não autenticado: esconder botão e popup
+        // Usuário não autenticado: esconder botão de perfil, mostrar botão de entrar
         btn.classList.add('hidden');
         popup.classList.add('hidden');
         btn.innerHTML = `<span class="profile-emoji">👤</span>`;
+        if (btnLogin) {
+            btnLogin.style.display = 'inline-block';
+        }
     }
 });
 
