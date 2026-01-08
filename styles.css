@@ -1371,3 +1371,69 @@ section {
 .hidden {
     display: none !important;
 }
+
+/* Profile Menu Popup */
+.profile-menu-wrapper {
+    position: relative;
+}
+
+.profile-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 8px;
+    min-width: 200px;
+    overflow: hidden;
+    z-index: 1001;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-popup-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: var(--text-color);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.profile-popup-item:hover {
+    background: var(--background-light);
+    color: var(--primary-color);
+}
+
+.profile-popup-item span {
+    font-size: 16px;
+    min-width: 20px;
+}
+
+.profile-popup-item:first-child {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.logout-item:hover {
+    background: #ffe6e6;
+    color: #d32f2f;
+}

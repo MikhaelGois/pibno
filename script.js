@@ -1,5 +1,7 @@
 // Importar funções do Firebase
 import { getAllPosts, loginUser, getCurrentUser, onAuthChange } from './firebase-service.js';
+import { auth } from './firebase-config.js';
+import { signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 
 // Menu Mobile Toggle
 const navToggle = document.getElementById('nav-toggle');
@@ -664,14 +666,15 @@ window.openPostModal = openPostModal;
 // Atualizar botão de perfil no header quando usuário autenticar/desautenticar
 onAuthChange(async (user) => {
     const btn = document.getElementById('my-profile-btn');
+    const popup = document.getElementById('profile-popup');
     
-    if (!btn) {
-        console.warn('Botão my-profile-btn não encontrado no DOM');
+    if (!btn || !popup) {
+        console.warn('Elementos de perfil não encontrados no DOM');
         return;
     }
 
     if (user) {
-        // Usuário autenticado: mostrar avatar
+        // Usuário autenticado: mostrar avatar e popup
         try {
             const profileData = await getCurrentUser();
             
@@ -687,18 +690,51 @@ onAuthChange(async (user) => {
                 btn.innerHTML = `<span class="profile-emoji">👤</span>`;
             }
             
-            btn.href = 'profile.html';
             btn.classList.remove('hidden');
             
         } catch (err) {
             console.error('Erro ao carregar dados do perfil:', err);
             btn.innerHTML = `<span class="profile-emoji">👤</span>`;
-            btn.href = 'profile.html';
             btn.classList.remove('hidden');
         }
     } else {
-        // Usuário não autenticado: esconder botão
+        // Usuário não autenticado: esconder botão e popup
         btn.classList.add('hidden');
-        btn.href = '#';
-        btn.innerHTML = `<span class="profile-emoji">👤</span>`;    }
+        popup.classList.add('hidden');
+        btn.innerHTML = `<span class="profile-emoji">👤</span>`;
+    }
 });
+
+// Controlar popup de perfil
+const profileBtn = document.getElementById('my-profile-btn');
+const profilePopup = document.getElementById('profile-popup');
+const logoutBtn = document.getElementById('logout-btn');
+
+if (profileBtn && profilePopup) {
+    // Abrir/fechar popup ao clicar no botão
+    profileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        profilePopup.classList.toggle('hidden');
+    });
+    
+    // Fechar popup ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!profileBtn.contains(e.target) && !profilePopup.contains(e.target)) {
+            profilePopup.classList.add('hidden');
+        }
+    });
+}
+
+// Logout
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            // Redirecionar para home
+            window.location.href = 'index.html';
+        } catch (err) {
+            console.error('Erro ao fazer logout:', err);
+            alert('Erro ao fazer logout: ' + err.message);
+        }
+    });
+}

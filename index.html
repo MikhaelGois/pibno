@@ -35,9 +35,20 @@
                     </ul>
                 </nav>
                 <!-- Botão de perfil para desktop (será preenchido com avatar quando autenticado) -->
-                <a id="my-profile-btn" class="btn btn-icon header-profile-btn hidden" href="profile.html" title="Meu perfil">
-                    <span class="profile-emoji">👤</span>
-                </a>
+                <div class="profile-menu-wrapper">
+                    <button id="my-profile-btn" class="btn btn-icon header-profile-btn hidden" title="Meu perfil">
+                        <span class="profile-emoji">👤</span>
+                    </button>
+                    <!-- Popup de perfil -->
+                    <div id="profile-popup" class="profile-popup hidden">
+                        <a href="profile.html" class="profile-popup-item">
+                            <span>👤</span> Ver Perfil
+                        </a>
+                        <button id="logout-btn" class="profile-popup-item logout-item">
+                            <span>🚪</span> Fazer Logout
+                        </button>
+                    </div>
+                </div>
                 <button class="nav-toggle" id="nav-toggle">
                     <span></span>
                     <span></span>
