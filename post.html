@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postagem - PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .post-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .post-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--background-light);
+        }
+        
+        .post-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: color 0.3s;
+        }
+        
+        .post-back-btn:hover {
+            color: var(--secondary-color);
+        }
+        
+        .post-title {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .post-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+        
+        .post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-media {
+            width: 100%;
+            margin-bottom: 3rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .post-media img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .post-media iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+        
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+        }
+        
+        .post-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-content strong {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .post-content em {
+            font-style: italic;
+        }
+        
+        .post-content u {
+            text-decoration: underline;
+        }
+        
+        .post-content h1,
+        .post-content h2,
+        .post-content h3 {
+            margin: 2rem 0 1rem;
+            color: var(--primary-color);
+        }
+        
+        .post-content h1 { font-size: 2rem; }
+        .post-content h2 { font-size: 1.6rem; }
+        .post-content h3 { font-size: 1.3rem; }
+        
+        .post-content ul {
+            margin: 1.5rem 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .post-content li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .post-content li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .post-content a {
+            color: var(--accent-color);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .post-content a:hover {
+            color: var(--primary-color);
+        }
+        
+        .post-share {
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .post-share h3 {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .share-facebook {
+            background: #1877f2;
+        }
+        
+        .share-whatsapp {
+            background: #25d366;
+        }
+        
+        .share-twitter {
+            background: #1da1f2;
+        }
+        
+        .share-copy {
+            background: var(--primary-color);
+        }
+        
+        /* Comments Section */
+        .comments-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(30, 77, 123, 0.08);
+        }
+        
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--background-light);
+        }
+        
+        .comments-header h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .comments-count {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .comment-form {
+            background: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .comment-form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .comment-form button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .comment-form button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .comment-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .comments-list {
+            margin-top: 2rem;
+        }
+        
+        .comment-item {
+            padding: 1.5rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .comment-item:hover {
+            box-shadow: 0 4px 12px rgba(30, 77, 123, 0.1);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comment-author {
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .comment-author::before {
+            content: '👤';
+        }
+        
+        .comment-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .comment-content {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .comment-delete {
+            background: transparent;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .comment-delete:hover {
+            background: #dc3545;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-light);
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .login-prompt a {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Related Posts Section */
+        .related-posts {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: 15px;
+        }
+        
+        .related-posts h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-post-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(30, 77, 123, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .related-post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(30, 77, 123, 0.15);
+        }
+        
+        .related-post-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .related-post-content {
+            padding: 1.25rem;
+        }
+        
+        .related-post-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .related-post-author {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .share-copy {
+            background: var(--primary-color);
+        }
+        
+        .post-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--background-light);
+            text-align: center;
+        }
+        
+        .loading-post {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--background-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--error);
+        }
+        
+        @media (max-width: 768px) {
+            .post-page {
+                padding: 1rem;
+            }
+            
+            .post-title {
+                font-size: 1.8rem;
+            }
+            
+            .post-meta {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .post-media iframe {
+                height: 300px;
+            }
+            
+            .post-content {
+                font-size: 1rem;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+            
+            .share-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="post-page">
+        <a href="index.html#blog" class="post-back-btn">
+            ← Voltar para o blog
+        </a>
+        
+        <div id="post-container">
+            <div class="loading-post">
+                <div class="loading-spinner"></div>
+                <p>Carregando postagem...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getAllPosts, getCommentsByPost, addComment, deleteComment, getCurrentUser, getPostsByAuthor, loginUser } from './firebase-service.js';
+        
+        let currentPost = null;
+        let currentUser = null;
+        
+        async function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            
+            const container = document.getElementById('post-container');
+            
+            if (!postId) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <h2>❌ Postagem não encontrada</h2>
+                        <p>O link pode estar incorreto ou a postagem foi removida.</p>
+                        <a href="index.html#blog" class="share-btn share-copy" style="display: inline-flex; margin-top: 2rem;">
+                            Voltar ao blog
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const result = await getAllPosts();
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+                
+                const post = result.posts.find(p => p.id === postId);
+                
+                if (!post) {
+                    throw new Error('Postagem não encontrada');
+                }
+                
+                // Atualizar título da página
+                document.title = `${post.title} - PIBNO`;
+                
+                // Renderizar post
+                const formattedDate = new Date(post.date || post.createdAt).toLocaleDateString('pt-BR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                let mediaHTML = '';
+                if (post.type === 'image' && post.image) {
+                    mediaHTML = `
+                        <div class="post-media">
+                            <img src="${post.image}" alt="${post.title}">
+                        </div>
+                    `;
+                } else if (post.type === 'video' && post.videoId) {
+                    mediaHTML = `
+                        <div class="post-media">
+                            <iframe 
+                                src="https://www.youtube.com/embed/${post.videoId}?rel=0" 
+                                title="${post.title}" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    `;
+                }
+                
+                const currentUrl = window.location.href;
+                const encodedUrl = encodeURIComponent(currentUrl);
+                const encodedTitle = encodeURIComponent(post.title);
+                
+                container.innerHTML = `
+                    <article>
+                        <header class="post-header">
+                            <h1 class="post-title">${post.title}</h1>
+                            <div class="post-meta">
+                                <span class="post-meta-item">
+                                    📅 ${formattedDate}
+                                </span>
+                                <span class="post-meta-item">
+                                    ✍️ ${post.author}
+                                </span>
+                                <span class="post-meta-item">
+                                    ${post.type === 'image' ? '📷 Imagem' : '🎥 Vídeo'}
+                                </span>
+                            </div>
+                        </header>
+                        
+                        ${mediaHTML}
+                        
+                        <div class="post-content">
+                            ${formatContent(post.content)}
+                        </div>
+                        
+                        <div class="post-share">
+                            <h3>Compartilhe esta postagem</h3>
+                            <div class="share-buttons">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" 
+                                   target="_blank" 
+                                   class="share-btn share-facebook">
+                                    📘 Facebook
+                                </a>
+                                <a href="https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}" 
+                                   target="_blank" 
+                                   class="share-btn share-whatsapp">
+                                    💬 WhatsApp
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}" 
+                                   target="_blank" 
+                                   class="share-btn share-twitter">
+                                    🐦 Twitter
+                                </a>
+                                <button onclick="copyLink()" class="share-btn share-copy">
+                                    🔗 Copiar link
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Comments Section -->
+                        <section class="comments-section" id="comments-section">
+                            <div class="comments-header">
+                                <h3>💬 Comentários</h3>
+                                <span class="comments-count" id="comments-count">0</span>
+                            </div>
+                            
+                            <div id="comment-form-container"></div>
+                            
+                            <div class="comments-list" id="comments-list">
+                                <div class="loading-post">
+                                    <p>Carregando comentários...</p>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Related Posts -->
+                        <section class="related-posts" id="related-posts">
+                            <h3>📚 Mais posts de ${post.author}</h3>
+                            <div class="related-posts-grid" id="related-posts-grid">
+                                <div class="loading-post">
+                                    <p>Carregando posts relacionados...</p>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <footer class="post-footer">
+                            <p style="color: var(--text-light);">
+                                © ${new Date().getFullYear()} PIBNO - Primeira Igreja Batista em Nova Odessa
+                            </p>
+                            <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.7;">
+                                Desenvolvido por <a href="https://github.com/MikhaelGois" target="_blank" rel="noopener" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Mikhael Gois</a>
+                            </p>
+                        </footer>
+                    </article>
+                `;
+                
+                // Salvar post atual e carregar funcionalidades
+                currentPost = post;
+                await loadUserAndCommentForm();
+                await loadComments(postId);
+                await loadRelatedPosts(post.author, postId);
+                
+            } catch (error) {
+                console.error('Erro ao carregar post:', error);
+                container.innerHTML = `
+                    <div class="error-message">
+                        <h2>❌ Erro ao carregar postagem</h2>
+                        <p>${error.message}</p>
+                        <a href="index.html#blog" class="share-btn share-copy" style="display: inline-flex; margin-top: 2rem;">
+                            Voltar ao blog
+                        </a>
+                    </div>
+                `;
+            }
+        }
+        
+        window.copyLink = function() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Link copiado!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        };
+        
+        function formatContent(content) {
+            if (!content) return '';
+            
+            // Converter markdown-like para HTML
+            let formatted = content
+                // Negrito: **texto** -> <strong>texto</strong>
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Itálico: *texto* -> <em>texto</em>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Sublinhado: __texto__ -> <u>texto</u>
+                .replace(/__(.*?)__/g, '<u>$1</u>')
+                // Títulos: ### Texto -> <h3>Texto</h3>
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                // Links: [texto](url) -> <a href="url">texto</a>
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                // Listas: • item -> <li>item</li>
+                .replace(/^• (.*$)/gim, '<li>$1</li>');
+            
+            // Envolver listas em <ul>
+            formatted = formatted.replace(/(<li>.*<\/li>)/gis, '<ul>$1</ul>');
+            
+            // Quebras de linha -> parágrafos
+            const lines = formatted.split('\n').filter(line => line.trim());
+            formatted = lines.map(line => {
+                // Se já é um elemento HTML (h1-6, ul, li), não envolver em <p>
+                if (line.match(/^<(h[1-6]|ul|li)/)) {
+                    return line;
+                }
+                return `<p>${line}</p>`;
+            }).join('');
+            
+            return formatted;
+        }
+        
+        async function loadUserAndCommentForm() {
+            currentUser = await getCurrentUser();
+            const container = document.getElementById('comment-form-container');
+            
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="login-prompt">
+                        <p>Faça <a href="#" id="show-login-modal" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">login</a> para comentar neste post.</p>
+                    </div>
+                `;
+                
+                // Adicionar evento ao link de login
+                document.getElementById('show-login-modal').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openLoginModal();
+                });
+            } else {
+                container.innerHTML = `
+                    <form class="comment-form" id="comment-form">
+                        <textarea 
+                            id="comment-content" 
+                            placeholder="Escreva seu comentário..." 
+                            required
+                            maxlength="500"
+                        ></textarea>
+                        <div class="comment-form-actions">
+                            <small style="color: var(--text-light);">Comentando como <strong>${currentUser.name || currentUser.email}</strong></small>
+                            <button type="submit" id="submit-comment-btn">Publicar comentário</button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('comment-form').addEventListener('submit', handleCommentSubmit);
+            }
+        }
+        
+        async function handleCommentSubmit(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('comment-content').value.trim();
+            if (!content) return;
+            
+            const btn = document.getElementById('submit-comment-btn');
+            btn.disabled = true;
+            btn.textContent = 'Publicando...';
+            
+            console.log('📝 Tentando adicionar comentário:', { postId: currentPost.id, content });
+            
+            try {
+                const result = await addComment(currentPost.id, { content });
+                
+                console.log('✅ Resultado do comentário:', result);
+                
+                if (result.success) {
+                    document.getElementById('comment-content').value = '';
+                    alert('✅ Comentário publicado com sucesso!');
+                    await loadComments(currentPost.id);
+                } else {
+                    console.error('❌ Erro ao publicar:', result.error);
+                    alert('Erro ao publicar comentário: ' + result.error);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao adicionar comentário:', error);
+                alert('Erro ao publicar comentário: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Publicar comentário';
+            }
+        }
+        
+        async function loadComments(postId) {
+            const container = document.getElementById('comments-list');
+            const countEl = document.getElementById('comments-count');
+            
+            console.log('🔄 Carregando comentários para postId:', postId);
+            
+            try {
+                const result = await getCommentsByPost(postId);
+                const comments = result.comments || [];
+                
+                console.log('📨 Comentários carregados:', comments.length, comments);
+                
+                countEl.textContent = comments.length;
+                
+                if (comments.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-comments">
+                            <p>Nenhum comentário ainda. Seja o primeiro a comentar!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = comments.map(comment => {
+                    const date = comment.createdAt?.toDate ? 
+                        comment.createdAt.toDate().toLocaleDateString('pt-BR', { 
+                            day: '2-digit', 
+                            month: 'long', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Data não disponível';
+                    
+                    const canDelete = currentUser && (currentUser.uid === comment.userId || currentUser.role === 'admin');
+                    
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.userName}</span>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <span class="comment-date">${date}</span>
+                                    ${canDelete ? `<button class="comment-delete" onclick="deleteCommentHandler('${comment.id}')">🗑️ Excluir</button>` : ''}
+                                </div>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Erro ao carregar comentários:', error);
+                container.innerHTML = '<p class="no-comments">Erro ao carregar comentários.</p>';
+            }
+        }
+        
+        window.deleteCommentHandler = async function(commentId) {
+            if (!confirm('Tem certeza que deseja excluir este comentário?')) return;
+            
+            try {
+                const result = await deleteComment(commentId);
+                if (result.success) {
+                    await loadComments(currentPost.id);
+                } else {
+                    alert('Erro ao excluir comentário: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao excluir comentário:', error);
+                alert('Erro ao excluir comentário');
+            }
+        };
+        
+        async function loadRelatedPosts(author, currentPostId) {
+            const container = document.getElementById('related-posts-grid');
+            
+            try {
+                const result = await getPostsByAuthor(author, 3, currentPostId);
+                const posts = result.posts || [];
+                
+                if (posts.length === 0) {
+                    document.getElementById('related-posts').style.display = 'none';
+                    return;
+                }
+                
+                container.innerHTML = posts.map(post => {
+                    const imageHtml = post.imageUrl ? 
+                        `<img src="${post.imageUrl}" alt="${post.title}" class="related-post-image">` : 
+                        `<div class="related-post-image" style="background: var(--background-light); display: flex; align-items: center; justify-content: center; font-size: 3rem;">📝</div>`;
+                    
+                    return `
+                        <a href="post.html?id=${post.id}" class="related-post-card">
+                            ${imageHtml}
+                            <div class="related-post-content">
+                                <h4 class="related-post-title">${post.title}</h4>
+                                <p class="related-post-author">Por: ${post.author}</p>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Erro ao carregar posts relacionados:', error);
+                document.getElementById('related-posts').style.display = 'none';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadPost);
+
+        // Funções do Modal de Login
+        function openLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('login-modal-form').reset();
+            document.getElementById('login-modal-alert').innerHTML = '';
+        }
+
+        // Event listeners do modal
+        document.getElementById('close-login-modal').addEventListener('click', closeLoginModal);
+        
+        document.getElementById('login-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'login-modal') {
+                closeLoginModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('login-modal').style.display === 'flex') {
+                closeLoginModal();
+            }
+        });
+
+        // Handler do formulário de login
+        document.getElementById('login-modal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 Entrando...';
+            
+            try {
+                const result = await loginUser(email, password);
+                
+                if (result.success) {
+                    if (result.userData.role === 'pending' || !result.userData.approved) {
+                        showLoginAlert('⏳ Sua conta ainda não foi aprovada. Aguarde a aprovação de um administrador.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                        return;
+                    }
+                    
+                    showLoginAlert('✅ Login realizado com sucesso!', 'success');
+                    
+                    setTimeout(() => {
+                        closeLoginModal();
+                        // Recarregar o formulário de comentário
+                        loadUserAndCommentForm();
+                    }, 1000);
+                } else {
+                    showLoginAlert(`❌ ${result.error}`, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showLoginAlert('❌ Erro ao fazer login. Tente novamente.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        function showLoginAlert(message, type) {
+            const alertDiv = document.getElementById('login-modal-alert');
+            const alertClass = type === 'success' ? 'login-alert-success' : 'login-alert-error';
+            const bgColor = type === 'success' ? '#d4edda' : '#f8d7da';
+            const textColor = type === 'success' ? '#155724' : '#721c24';
+            const borderColor = type === 'success' ? '#c3e6cb' : '#f5c6cb';
+            
+            alertDiv.innerHTML = `
+                <div style="padding: 1rem; margin-bottom: 1rem; border-radius: 5px; font-weight: 600; background: ${bgColor}; color: ${textColor}; border: 1px solid ${borderColor};">
+                    ${message}
+                </div>
+            `;
+            
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+    </script>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="login-modal-content" style="background: white; padding: 2rem; border-radius: 10px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative;">
+            <button class="login-modal-close" id="close-login-modal" style="position: absolute; top: 1rem; right: 1rem; font-size: 2rem; background: none; border: none; cursor: pointer; color: var(--text-light); line-height: 1;">&times;</button>
+            <div class="login-modal-header" style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">👥 Login</h2>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Entre para comentar neste post</p>
+            </div>
+            <div id="login-modal-alert"></div>
+            <form id="login-modal-form">
+                <div class="login-form-group" style="margin-bottom: 1rem;">
+                    <label for="login-username" style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Usuário/Email</label>
+                    <input type="text" id="login-username" name="username" required autocomplete="username" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                </div>
+                <div class="login-form-group" style="margin-bottom: 1.5rem;">
+                    <label for="login-password" style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Senha</label>
+                    <input type="password" id="login-password" name="password" required autocomplete="current-password" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                </div>
+                <button type="submit" class="btn-login-submit" style="width: 100%; padding: 1rem; background: var(--accent-color); color: white; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">Entrar</button>
+            </form>
+            <div class="login-modal-footer" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                <p style="margin: 0.5rem 0; color: var(--text-light);">Não tem uma conta? <a href="register.html" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">Criar conta</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

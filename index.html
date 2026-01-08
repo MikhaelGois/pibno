@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Primeira Igreja Batista em Nova Odessa - Uma comunidade de fé crescendo em Cristo">
+    <title>PIBNO - Primeira Igreja Batista em Nova Odessa</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX0biEvYb-OCgq4vLYjegE6EEdJox-4yBYYg&s" alt="PIBNO Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>PIBNO</h1>
+                        <p class="logo-subtitle">Primeira Igreja Batista em Nova Odessa</p>
+                    </div>
+                </div>
+                <nav class="nav" id="nav">
+                    <button class="nav-close" id="nav-close">&times;</button>
+                    <ul class="nav-list">
+                        <li><a href="#inicio" class="nav-link">Início</a></li>
+                        <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                        <li><a href="#cultos" class="nav-link">Cultos</a></li>
+                        <li><a href="#transmissao" class="nav-link">Transmissão</a></li>
+                        <li><a href="#ministerios" class="nav-link">Ministérios</a></li>
+                        <li><a href="#contato" class="nav-link">Contato</a></li>
+                        <li><button class="btn-login" id="btn-login">🔐 Entrar</button></li>
+                    </ul>
+                </nav>
+                <button class="nav-toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-verse">"Porque decidi nada saber entre vocês,</h2>
+                <h2 class="hero-verse-highlight">a não ser Jesus Cristo, e este, CRUCIFICADO."</h2>
+                <p class="hero-reference">1 Coríntios 2:2</p>
+            </div>
+            
+            <!-- Carrossel de Posts -->
+            <div class="posts-carousel">
+                <h3 class="carousel-title">Últimas Postagens</h3>
+                <div class="carousel-wrapper">
+                    <button class="carousel-btn carousel-btn-prev" id="carousel-prev">❮</button>
+                    <div class="carousel-container">
+                        <div class="carousel-track" id="carousel-track">
+                            <!-- Posts serão carregados aqui -->
+                        </div>
+                    </div>
+                    <button class="carousel-btn carousel-btn-next" id="carousel-next">❯</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horários -->
+    <section class="schedule" id="cultos">
+        <div class="container">
+            <div class="schedule-grid">
+                <div class="schedule-card">
+                    <h3 class="schedule-title">Escola Bíblica</h3>
+                    <p class="schedule-day">Domingo</p>
+                    <p class="schedule-time">9h</p>
+                </div>
+                <div class="schedule-card">
+                    <h3 class="schedule-title">Culto</h3>
+                    <p class="schedule-day">Domingo</p>
+                    <p class="schedule-time">10h30 e 18h30</p>
+                </div>
+                <div class="schedule-card">
+                    <h3 class="schedule-title">Estudos Bíblicos</h3>
+                    <p class="schedule-day">Quarta-feira</p>
+                    <p class="schedule-time">19h30</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre -->
+    <section class="about" id="sobre">
+        <div class="container">
+            <h2 class="section-title">Crescendo na Fé em Cristo</h2>
+            <p class="section-subtitle">Existimos por Ele e para Ele!</p>
+            <div class="about-content">
+                <p>A Primeira Igreja Batista em Nova Odessa é uma comunidade de fé comprometida com a pregação da Palavra de Deus e o crescimento espiritual de seus membros. Nossa missão é glorificar a Deus através do ensino bíblico, adoração sincera e serviço ao próximo.</p>
+                <p>Somos uma igreja que valoriza a comunhão, o discipulado e a evangelização, buscando sempre viver de acordo com os princípios das Escrituras Sagradas.</p>
+                <p><strong>Pastor:</strong> Verner Gilberto Museneck</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transmissão ao Vivo -->
+    <section class="live-stream" id="transmissao">
+        <div class="container">
+            <h2 class="section-title">Transmissão ao Vivo</h2>
+            <p class="section-subtitle">Acompanhe nossos cultos online</p>
+            <div class="live-stream-container">
+                <div class="video-wrapper">
+                    <!-- Canal do YouTube da igreja -->
+                    <iframe 
+                        id="youtube-live"
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/live_stream?channel=UCkHzWJHXZT0L7Y0Y9Y9Y9YQ&autoplay=0" 
+                        title="Transmissão ao Vivo PIBNO" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p class="live-info">Cultos transmitidos aos domingos às 10h30 e 18h30</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ministérios -->
+    <section class="ministries" id="ministerios">
+        <div class="container">
+            <h2 class="section-title">Ministérios</h2>
+            <p class="section-subtitle">Conheça nossos ministérios</p>
+            <div class="ministries-grid">
+                <div class="ministry-card">
+                    <div class="ministry-icon">👨‍👩‍👧‍👦</div>
+                    <h3 class="ministry-title">Ministério Infantil</h3>
+                    <p class="ministry-description">Ensinando as crianças sobre o amor de Deus de forma lúdica e educativa.</p>
+                </div>
+                <div class="ministry-card">
+                    <div class="ministry-icon">🎵</div>
+                    <h3 class="ministry-title">Ministério de Louvor</h3>
+                    <p class="ministry-description">Adoração a Deus através da música e cânticos de louvor.</p>
+                </div>
+                <div class="ministry-card">
+                    <div class="ministry-icon">👥</div>
+                    <h3 class="ministry-title">Ministério de Jovens</h3>
+                    <p class="ministry-description">Fortalecendo a fé dos jovens através de estudos e comunhão.</p>
+                </div>
+                <div class="ministry-card">
+                    <div class="ministry-icon">🤝</div>
+                    <h3 class="ministry-title">Ministério Social</h3>
+                    <p class="ministry-description">Servindo a comunidade com amor e compaixão.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Redes Sociais -->
+    <section class="social">
+        <div class="container">
+            <h2 class="section-title">Redes Sociais</h2>
+            <p class="section-subtitle">Siga a PIBNO</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/pibno/?locale=pt_BR" class="social-link facebook" target="_blank">
+                    <span class="social-icon">f</span>
+                    <span class="social-name">Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/pibno.fazendavelha/?hl=es" class="social-link instagram" target="_blank">
+                    <span class="social-icon">📷</span>
+                    <span class="social-name">Instagram</span>
+                </a>
+                <a href="https://www.youtube.com/@batistafazendavelha" class="social-link youtube" target="_blank">
+                    <span class="social-icon">▶</span>
+                    <span class="social-name">YouTube</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section class="contact" id="contato">
+        <div class="container">
+            <h2 class="section-title">Contato</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <h3>📍 Endereço</h3>
+                        <p>Parque dos Pinheiros<br>Nova Odessa - SP<br>CEP: 13460-000</p>
+                        <p style="margin-top: 0.5rem;"><a href="https://www.google.com/maps/place/Primeira+Igreja+Batista+de+Nova+Odessa/@-22.7305,-47.2813,15z/data=!4m6!3m5!1s0x0:0x4fda0924bc626451!8m2!3d-22.7305!4d-47.2813!16s" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">📍 Ver no Mapa</a></p>
+                    </div>
+                    <div class="contact-item">
+                        <h3>📧 Email</h3>
+                        <p>contato@pibno.com.br</p>
+                    </div>
+                    <div class="contact-item">
+                        <h3>📱 Telefone</h3>
+                        <p>Em breve</p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Seu Nome" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Seu Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Sua Mensagem" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Primeira Igreja Batista em Nova Odessa. Todos os direitos reservados.</p>
+            <p class="footer-verse">"Existimos por Ele e para Ele!"</p>
+            <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+                <a href="admin.html" style="color: var(--white); text-decoration: none;">🔐 Área Administrativa</a>
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.6;">
+                Desenvolvido por <a href="https://github.com/MikhaelGois" target="_blank" rel="noopener" style="color: var(--white); text-decoration: none; font-weight: 600;">Mikhael Gois</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="login-modal">
+        <div class="login-modal-content">
+            <button class="login-modal-close" id="close-login-modal">&times;</button>
+            <div class="login-modal-header">
+                <h2>Entrar</h2>
+                <p>Faça login com seu e-mail e senha para acessar sua conta.</p>
+            </div>
+            <div id="login-modal-alert"></div>
+            <form id="login-modal-form">
+                <div class="login-form-group">
+                    <label for="login-username">Usuário</label>
+                    <input type="text" id="login-username" name="username" required autocomplete="username">
+                </div>
+                <div class="login-form-group">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" name="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-login-submit">Entrar</button>
+            </form>
+            <div class="login-modal-footer">
+                <p>Entre com seu e-mail e senha.</p>
+                <p><a href="admin.html" style="color: var(--accent-color);">Ou abra o painel completo →</a></p>
+                <p style="margin-top: 1rem;">Não tem uma conta? <a href="register.html" style="color: var(--accent-color); font-weight: 600;">Criar conta</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

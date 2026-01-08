@@ -1,0 +1,25 @@
+{
+  "name": "pibno-site",
+  "version": "1.0.0",
+  "description": "Site PIBNO - Sistema de Gerenciamento de Posts",
+  "main": "index.html",
+  "scripts": {
+    "start": "firebase serve",
+    "deploy": "firebase deploy",
+    "build": "echo 'No build required for static site'"
+  },
+  "keywords": [
+    "firebase",
+    "hosting",
+    "blog",
+    "posts"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
+}

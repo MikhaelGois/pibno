@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil — PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container { max-width: 900px; margin: 3rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .profile-grid { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items: start; }
+        .avatar-box { text-align: center; }
+        .avatar-box img { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 4px solid var(--background); }
+        .avatar-actions { margin-top: 0.75rem; }
+        .form-row { margin-bottom: 1rem; }
+        .form-row label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+        .form-row input, .form-row textarea, .form-row select { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e6e6e6; }
+        .btns { display:flex; gap:0.75rem; margin-top:1rem; }
+        .note { font-size:0.9rem; color:var(--text-light); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-text">
+                    <h1 style="margin:0;">Perfil</h1>
+                </div>
+                <div style="margin-left:auto;">
+                    <a href="index.html" class="btn">← Voltar</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container profile-container">
+        <div id="alert-area"></div>
+        <div class="profile-grid">
+            <div class="avatar-box">
+                <img id="avatar-img" src="https://via.placeholder.com/180?text=Avatar" alt="Avatar">
+                <div class="avatar-actions">
+                    <input type="file" id="avatar-input" accept="image/*">
+                    <p class="note">Tamanho máximo recomendado: 2MB</p>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-row">
+                    <label for="name">Nome completo</label>
+                    <input id="name" type="text">
+                </div>
+
+                <div class="form-row">
+                    <label for="username">Nome de usuário</label>
+                    <input id="username" type="text" disabled>
+                </div>
+
+                <div class="form-row">
+                    <label for="email">E-mail</label>
+                    <input id="email" type="email" disabled>
+                </div>
+
+                <div class="form-row">
+                    <label for="memberType">Tipo de membro</label>
+                    <input id="memberType" type="text" disabled>
+                </div>
+
+                <div class="form-row">
+                    <label for="bio">Biografia (curta)</label>
+                    <textarea id="bio" rows="4"></textarea>
+                </div>
+
+                <div class="btns">
+                    <button id="save-btn" class="btn">Salvar perfil</button>
+                    <button id="logout-btn" class="btn btn-secondary">Sair</button>
+                </div>
+
+                <p style="margin-top:1rem;" class="note">Dados pessoais visíveis ao criar posts e comentários. Para alterar permissões ou funções, contate um administrador.</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="profile.js"></script>
+</body>
+</html>

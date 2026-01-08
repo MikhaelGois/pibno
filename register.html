@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .register-container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .register-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .register-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .register-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+        }
+
+        .register-form {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Open Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(74, 159, 216, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.3rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .register-footer {
+            text-align: center;
+            padding: 0 2rem 2rem;
+            color: var(--text-light);
+        }
+
+        .register-footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-box {
+            background: var(--background-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>📝 Criar Conta</h1>
+            <p>Primeira Igreja Batista em Nova Odessa</p>
+        </div>
+
+        <div class="register-form">
+            <div class="info-box">
+                <p>
+                    ℹ️ <strong>Membros da Igreja:</strong> Acesso automático como leitor (visualizar conteúdo).<br>
+                    <strong>Membros de Ministério:</strong> Acesso automático como editor (publicar postagens).
+                </p>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">Nome de Usuário *</label>
+                    <input type="text" id="username" name="username" required minlength="3" pattern="[a-z0-9._]+" autocomplete="username">
+                    <small>Apenas letras minúsculas, números, pontos e underscore. Mínimo 3 caracteres.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" name="email" required autocomplete="email">
+                    <small>Seu e-mail de contato.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Nome Completo *</label>
+                    <input type="text" id="name" name="name" required autocomplete="name">
+                    <small>Seu nome completo como deseja que apareça.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="member-type">Tipo de Membro *</label>
+                    <select id="member-type" name="member-type" required style="width: 100%; padding: 0.9rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: 'Open Sans', sans-serif;">
+                        <option value="church">Membro da Igreja</option>
+                        <option value="ministry">Membro de Ministério</option>
+                    </select>
+                    <small>Membros da igreja têm acesso como leitor. Membros de ministério podem publicar postagens.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha *</label>
+                    <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password">
+                    <small>Mínimo 6 caracteres.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Senha *</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required minlength="6" autocomplete="new-password">
+                    <small>Digite a senha novamente.</small>
+                </div>
+
+                <button type="submit" class="btn-register">Criar Conta</button>
+            </form>
+        </div>
+
+        <div class="register-footer">
+            <p>Já tem uma conta? <a href="admin.html">Fazer Login</a></p>
+            <p style="margin-top: 0.5rem;"><a href="index.html">← Voltar ao site</a></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { registerUser } from './firebase-service.js';
+
+        const registerForm = document.getElementById('register-form');
+        const alertContainer = document.getElementById('alert-container');
+
+        registerForm.addEventListener('submit', handleRegister);
+
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const email = document.getElementById('email').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const memberType = document.getElementById('member-type').value;
+
+            // Validações
+            if (password !== confirmPassword) {
+                showAlert('As senhas não coincidem!', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('A senha deve ter pelo menos 6 caracteres!', 'error');
+                return;
+            }
+
+            if (username.length < 3) {
+                showAlert('O nome de usuário deve ter pelo menos 3 caracteres!', 'error');
+                return;
+            }
+
+            // Validar formato do username
+            const usernameRegex = /^[a-z0-9._]+$/;
+            if (!usernameRegex.test(username)) {
+                showAlert('Nome de usuário inválido! Use apenas letras minúsculas, números, pontos e underscore.', 'error');
+                return;
+            }
+
+            // Desabilitar botão
+            const submitBtn = registerForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Criando conta...';
+
+            // Determinar role baseado no tipo de membro
+            const role = memberType === 'ministry' ? 'editor' : 'viewer';
+            const approved = true; // Aprovação automática
+
+            // Registrar usuário no Firebase
+            const result = await registerUser(email, password, {
+                username: username,
+                name: name,
+                memberType: memberType,
+                role: role,
+                approved: approved
+            });
+
+            if (result.success) {
+                const roleLabel = role === 'editor' ? 'Editor (pode publicar)' : 'Leitor (visualizar)';
+                showAlert(`✅ Conta criada com sucesso! Você foi cadastrado como: ${roleLabel}`, 'success');
+                
+                // Limpar formulário
+                registerForm.reset();
+
+                // Redirecionar após 3 segundos
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 3000);
+            } else {
+                let errorMessage = 'Erro ao criar conta. Tente novamente.';
+                
+                if (result.error.includes('email-already-in-use')) {
+                    errorMessage = 'Este e-mail já está cadastrado!';
+                } else if (result.error.includes('invalid-email')) {
+                    errorMessage = 'E-mail inválido!';
+                } else if (result.error.includes('weak-password')) {
+                    errorMessage = 'Senha muito fraca!';
+                }
+                
+                showAlert(errorMessage, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Criar Conta';
+            }
+        }
+
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            // Auto-remover alertas de erro após 5 segundos
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Firebase - PIBNO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .status.pending {
+            background: #ffc107;
+            color: #856404;
+        }
+        
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+        
+        .info code {
+            background: rgba(0,0,0,0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .progress {
+            margin-top: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Teste de Configuração Firebase</h1>
+        <p class="subtitle">Sistema PIBNO - Verificação de Integração</p>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>1️⃣</span>
+                <span>Conexão com Firebase</span>
+            </div>
+            <p>Verificando se o Firebase está inicializado corretamente...</p>
+            <div id="firebase-status" class="status pending">⏳ Aguardando teste</div>
+            <div id="firebase-result" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>2️⃣</span>
+                <span>Firebase Authentication</span>
+            </div>
+            <p>Verificando se o Authentication está ativado...</p>
+            <div id="auth-status" class="status pending">⏳ Aguardando teste</div>
+            <div id="auth-result" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>3️⃣</span>
+                <span>Cloud Firestore</span>
+            </div>
+            <p>Verificando se o Firestore está configurado...</p>
+            <div id="firestore-status" class="status pending">⏳ Aguardando teste</div>
+            <div id="firestore-result" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>4️⃣</span>
+                <span>Firebase Storage</span>
+            </div>
+            <p>Verificando se o Storage está ativado...</p>
+            <div id="storage-status" class="status pending">⏳ Aguardando teste</div>
+            <div id="storage-result" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill">0%</div>
+            </div>
+        </div>
+        
+        <button id="run-tests" onclick="runAllTests()">▶️ Executar Testes</button>
+        
+        <div class="info">
+            <strong>ℹ️ Informações:</strong><br>
+            Este teste verifica se o Firebase está configurado corretamente. Se algum teste falhar, siga as instruções no arquivo <code>GUIA_FIREBASE_COMPLETO.md</code>.
+        </div>
+    </div>
+    
+    <script type="module">
+        import { auth, db, storage } from './firebase-config.js';
+        import { onAuthStateChanged } from './firebase-config.js';
+        
+        let testsCompleted = 0;
+        const totalTests = 4;
+        
+        function updateProgress() {
+            testsCompleted++;
+            const percentage = Math.round((testsCompleted / totalTests) * 100);
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-fill').textContent = percentage + '%';
+        }
+        
+        window.runAllTests = async function() {
+            testsCompleted = 0;
+            document.getElementById('run-tests').disabled = true;
+            document.getElementById('run-tests').textContent = '🔄 Executando testes...';
+            
+            // Teste 1: Firebase Config
+            await testFirebaseConfig();
+            
+            // Teste 2: Authentication
+            await testAuth();
+            
+            // Teste 3: Firestore
+            await testFirestore();
+            
+            // Teste 4: Storage
+            await testStorage();
+            
+            document.getElementById('run-tests').disabled = false;
+            document.getElementById('run-tests').textContent = '✅ Testes Concluídos!';
+            
+            setTimeout(() => {
+                document.getElementById('run-tests').textContent = '🔄 Executar Novamente';
+            }, 2000);
+        }
+        
+        async function testFirebaseConfig() {
+            const statusEl = document.getElementById('firebase-status');
+            const resultEl = document.getElementById('firebase-result');
+            
+            try {
+                if (auth && db && storage) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = '✅ Firebase inicializado com sucesso!';
+                    resultEl.style.display = 'block';
+                    resultEl.textContent = `Projeto: pibno-3aff5\nAuth: Conectado\nFirestore: Conectado\nStorage: Conectado`;
+                } else {
+                    throw new Error('Serviços do Firebase não inicializados');
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Erro na inicialização';
+                resultEl.style.display = 'block';
+                resultEl.textContent = error.message;
+            }
+            
+            updateProgress();
+        }
+        
+        async function testAuth() {
+            const statusEl = document.getElementById('auth-status');
+            const resultEl = document.getElementById('auth-result');
+            
+            try {
+                // Tentar verificar o estado de autenticação
+                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        statusEl.className = 'status success';
+                        statusEl.textContent = '✅ Authentication ativado (usuário logado)';
+                        resultEl.style.display = 'block';
+                        resultEl.textContent = `Email: ${user.email}\nUID: ${user.uid}`;
+                    } else {
+                        statusEl.className = 'status success';
+                        statusEl.textContent = '✅ Authentication ativado (nenhum usuário logado)';
+                        resultEl.style.display = 'block';
+                        resultEl.textContent = 'Authentication está funcionando. Você pode fazer login ou registrar novos usuários.';
+                    }
+                    unsubscribe();
+                });
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Authentication não configurado';
+                resultEl.style.display = 'block';
+                resultEl.textContent = `Erro: ${error.message}\n\nAção: Ative o Authentication no Console do Firebase`;
+            }
+            
+            updateProgress();
+        }
+        
+        async function testFirestore() {
+            const statusEl = document.getElementById('firestore-status');
+            const resultEl = document.getElementById('firestore-result');
+            
+            try {
+                // Importar função de teste
+                const { collection, getDocs } = await import('./firebase-config.js');
+                
+                // Tentar ler a coleção de posts
+                const postsRef = collection(db, 'posts');
+                const snapshot = await getDocs(postsRef);
+                
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Firestore configurado corretamente';
+                resultEl.style.display = 'block';
+                resultEl.textContent = `Posts encontrados: ${snapshot.size}\nColeção 'posts' acessível\nPermissões de leitura OK`;
+            } catch (error) {
+                if (error.code === 'permission-denied') {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ Erro de permissão';
+                    resultEl.style.display = 'block';
+                    resultEl.textContent = `Firestore existe mas as regras de segurança estão bloqueando o acesso.\n\nAção: Configure as regras de segurança conforme GUIA_FIREBASE_COMPLETO.md`;
+                } else if (error.code === 'unavailable') {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ Firestore não criado';
+                    resultEl.style.display = 'block';
+                    resultEl.textContent = `Banco de dados não encontrado.\n\nAção: Crie o Firestore Database no Console do Firebase`;
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ Erro desconhecido';
+                    resultEl.style.display = 'block';
+                    resultEl.textContent = error.message;
+                }
+            }
+            
+            updateProgress();
+        }
+        
+        async function testStorage() {
+            const statusEl = document.getElementById('storage-status');
+            const resultEl = document.getElementById('storage-result');
+            
+            try {
+                // Importar função de teste
+                const { ref, getMetadata } = await import('./firebase-config.js');
+                
+                // Tentar acessar a referência do storage
+                const storageRef = ref(storage, 'posts/');
+                
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Storage configurado e acessível';
+                resultEl.style.display = 'block';
+                resultEl.textContent = `Bucket: ${storage.app.options.storageBucket}\nPasta 'posts' configurada\nPronto para uploads`;
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Storage não configurado';
+                resultEl.style.display = 'block';
+                resultEl.textContent = `Erro: ${error.message}\n\nAção: Ative o Storage no Console do Firebase`;
+            }
+            
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

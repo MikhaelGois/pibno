@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Perfil público — PIBNO</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .user-container { max-width: 900px; margin: 3rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+        .user-header { display:flex; gap:1.5rem; align-items:center; }
+        .user-avatar { width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid var(--background); }
+        .user-meta h2 { margin:0 0 0.25rem 0; }
+        .user-meta .sub { color:var(--text-light); font-size:0.95rem; }
+        .user-bio { margin-top:1rem; }
+        .user-posts { margin-top:2rem; }
+        .post-card { padding:1rem; border-radius:10px; border:1px solid #f0f0f0; margin-bottom:1rem; }
+    </style>
+</head>
+<body>
+    <main class="container user-container">
+        <a href="index.html" class="btn">← Voltar</a>
+        <div id="alert-area"></div>
+
+        <div id="user-area">
+            <div class="user-header">
+                <img id="user-avatar" class="user-avatar" src="https://via.placeholder.com/120?text=Avatar" alt="Avatar">
+                <div class="user-meta">
+                    <h2 id="user-name">Nome do usuário</h2>
+                    <div class="sub">@<span id="user-username">username</span> • <span id="user-memberType"></span></div>
+                    <div class="sub">Entrou em: <span id="user-joined"></span></div>
+                </div>
+            </div>
+
+            <div class="user-bio">
+                <p id="user-bio">Biografia do usuário.</p>
+            </div>
+
+            <section class="user-posts">
+                <h3>Postagens públicas</h3>
+                <div id="posts-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="user.js"></script>
+</body>
+</html>
